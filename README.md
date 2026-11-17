@@ -83,13 +83,19 @@ PYTHONPATH=src python scripts/serve_demo.py
 
 ### Learn with me (you answer → it adapts)
 
+**Streamlit UI (recommended):**
+
 ```bash
 ollama serve          # if using GPU lessons
-ollama pull qwen2.5:7b
+source .venv/bin/activate
+streamlit run app.py
+```
+
+**CLI:**
+
+```bash
 PYTHONPATH=src python scripts/learn_with_me.py --name Azhar
-# see how it adapted:
 PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --status
-# faster template-only lessons:
 PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --no-ollama
 ```
 

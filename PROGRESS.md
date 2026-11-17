@@ -9,8 +9,9 @@
 
 ## Learn with me (interactive)
 ```bash
+streamlit run app.py
+# or CLI:
 PYTHONPATH=src python scripts/learn_with_me.py --name Azhar
-PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --status
 ```
 You answer samples → bandit adapts method → Qwen 7B lesson → delayed check trains the policy.
 
