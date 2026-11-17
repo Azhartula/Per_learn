@@ -1,0 +1,49 @@
+{
+  "skill": "Multiplication Fractions",
+  "note": "Student-level holdout on ASSISTments. Predictive quality \u2260 learning efficacy.",
+  "bkt_params_train": {
+    "skill": "Multiplication Fractions",
+    "p_l0": 0.5010836826783921,
+    "p_t": 0.14874908848034296,
+    "p_g": 0.2951917244779473,
+    "p_s": 0.20336062198335458,
+    "n_rows": 4428,
+    "n_students": 627
+  },
+  "n_train_students": 627,
+  "n_test_students": 156,
+  "models": {
+    "bkt": {
+      "log_loss": 0.6176329449038285,
+      "brier": 0.2137103160389657,
+      "accuracy_at_0.5": 0.6706531738730451,
+      "n": 1087
+    },
+    "empirical_rate": {
+      "log_loss": 0.637151210482311,
+      "brier": 0.2225218354770941,
+      "accuracy_at_0.5": 0.6660533578656854,
+      "n": 1087
+    },
+    "logistic_baseline": {
+      "log_loss": 0.6227969250827577,
+      "brier": 0.21510753552566156,
+      "accuracy_at_0.5": 0.6642134314627415,
+      "n": 1087
+    }
+  },
+  "bkt_calibration": [
+    {
+      "bin": "0.4-0.6",
+      "n": 357,
+      "mean_p": 0.5054485794640096,
+      "mean_y": 0.5546218487394958
+    },
+    {
+      "bin": "0.6-0.8",
+      "n": 730,
+      "mean_p": 0.7463104489731185,
+      "mean_y": 0.7205479452054795
+    }
+  ]
+}

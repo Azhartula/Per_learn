@@ -1,0 +1,190 @@
+{
+  "note": "If respondent=simulated, treat as protocol dry-run only.",
+  "n_sessions": 16,
+  "n_events": 215,
+  "by_arm": {
+    "adaptive_method": {
+      "n": 8,
+      "mean_delayed": 0.5625,
+      "ci95": [
+        0.3848958333333333,
+        0.7291666666666666
+      ]
+    },
+    "fixed_worked_example": {
+      "n": 8,
+      "mean_delayed": 0.5,
+      "ci95": [
+        0.3125,
+        0.6875
+      ]
+    }
+  },
+  "sessions": [
+    {
+      "session_id": "5f632da8a687",
+      "learner_id": "dryrun_08",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "5f8681ca0bc3",
+      "learner_id": "dryrun_07",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.0,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "75957a1a75ad",
+      "learner_id": "dryrun_10",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.0,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "8b602f2d3ed5",
+      "learner_id": "dryrun_13",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 1.0,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "90a9d4e32d67",
+      "learner_id": "dryrun_06",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.0,
+      "delayed_score": 0.6666666666666666,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "9c9804280cf4",
+      "learner_id": "dryrun_15",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.0,
+      "delayed_score": 0.5,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "a6d7b7963bb8",
+      "learner_id": "dryrun_14",
+      "arm": "adaptive_method",
+      "method": "problem_first",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "c955a1b59a91",
+      "learner_id": "dryrun_12",
+      "arm": "adaptive_method",
+      "method": "story_analogy",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "cd10343beb5f",
+      "learner_id": "dryrun_05",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.3333333333333333,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "cf916e8db60d",
+      "learner_id": "dryrun_11",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 1.0,
+      "delayed_score": 0.5,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "d88d55eba42d",
+      "learner_id": "dryrun_02",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 1.0,
+      "n_delayed_items": 2
+    },
+    {
+      "session_id": "de97fbdeddba",
+      "learner_id": "dryrun_09",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.0,
+      "delayed_score": 0.6666666666666666,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "e1a60f514dd4",
+      "learner_id": "dryrun_04",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "e7545dab0d39",
+      "learner_id": "dryrun_03",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "f3adfacadd4c",
+      "learner_id": "dryrun_00",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "n_delayed_items": 3
+    },
+    {
+      "session_id": "fef83b0947ef",
+      "learner_id": "dryrun_01",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "respondent": "simulated",
+      "immediate_score": 0.5,
+      "delayed_score": 0.3333333333333333,
+      "n_delayed_items": 3
+    }
+  ],
+  "limitations": [
+    "Small N; not a powered RCT.",
+    "Dry-run respondents are simulated unless labeled human.",
+    "Immediate_post is not delayed mastery."
+  ]
+}

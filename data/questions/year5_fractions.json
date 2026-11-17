@@ -1,9 +1,14 @@
 {
   "meta": {
-    "title": "Year 5 fractions question bank",
+    "title": "Year 5 fractions question bank (parallel forms A/B/C)",
     "curriculum": "Year 5 fractions (demo)",
-    "version": 1,
-    "answer_format": "SymPy-parseable strings; fractions as a/b"
+    "version": 2,
+    "answer_format": "SymPy-parseable strings; fractions as a/b; distractor_misconceptions map choice→misconception",
+    "forms": {
+      "A": "pretest / diagnostic preferred",
+      "B": "immediate post preferred",
+      "C": "delayed_24h preferred"
+    }
   },
   "skills": [
     "equivalent_fractions",
@@ -44,430 +49,1780 @@
       "id": "eq_01",
       "skill": "equivalent_fractions",
       "difficulty": 1,
-      "misconceptions": ["equivalent_add_same"],
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
       "stem": "Which fraction is equivalent to 1/2?",
       "type": "mcq",
-      "choices": ["1/3", "2/4", "2/3", "3/5"],
+      "choices": [
+        "1/3",
+        "2/4",
+        "2/3",
+        "3/5"
+      ],
       "answer": "2/4",
       "answer_sympy": "2/4",
-      "explanation": "Multiply numerator and denominator by 2: 1/2 = 2/4."
+      "explanation": "Multiply numerator and denominator by 2: 1/2 = 2/4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "eq_02",
       "skill": "equivalent_fractions",
       "difficulty": 1,
-      "misconceptions": ["equivalent_add_same"],
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
       "stem": "Fill in the blank: 2/3 = ?/6",
       "type": "fill",
       "answer": "4",
       "answer_sympy": "4",
-      "explanation": "Denominator ×2, so numerator ×2: 2×2=4."
+      "explanation": "Denominator ×2, so numerator ×2: 2×2=4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "eq_03",
       "skill": "equivalent_fractions",
       "difficulty": 2,
-      "misconceptions": ["equivalent_add_same"],
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
       "stem": "Simplify 6/9 to its simplest form.",
       "type": "fill",
       "answer": "2/3",
       "answer_sympy": "2/3",
-      "explanation": "Divide num and den by 3."
+      "explanation": "Divide num and den by 3.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "eq_04",
       "skill": "equivalent_fractions",
       "difficulty": 2,
-      "misconceptions": ["equivalent_add_same"],
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
       "stem": "Are 3/5 and 6/10 equivalent? Answer yes or no.",
       "type": "fill",
       "answer": "yes",
       "answer_sympy": null,
-      "explanation": "3/5 ×2/2 = 6/10."
+      "explanation": "3/5 ×2/2 = 6/10.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "eq_05",
       "skill": "equivalent_fractions",
       "difficulty": 2,
-      "misconceptions": ["bigger_denominator_bigger"],
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
       "stem": "Which is equivalent to 4/8?",
       "type": "mcq",
-      "choices": ["1/3", "1/2", "2/3", "3/4"],
+      "choices": [
+        "1/3",
+        "1/2",
+        "2/3",
+        "3/4"
+      ],
       "answer": "1/2",
       "answer_sympy": "1/2",
-      "explanation": "4÷4=1, 8÷4=2."
+      "explanation": "4÷4=1, 8÷4=2.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "eq_06",
       "skill": "equivalent_fractions",
       "difficulty": 3,
-      "misconceptions": ["equivalent_add_same"],
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
       "stem": "Write three fractions equivalent to 1/4.",
       "type": "multi_fill",
-      "answer": ["2/8", "3/12", "4/16"],
-      "answer_sympy": ["2/8", "3/12", "4/16"],
-      "explanation": "Multiply by 2, 3, and 4."
+      "answer": [
+        "2/8",
+        "3/12",
+        "4/16"
+      ],
+      "answer_sympy": [
+        "2/8",
+        "3/12",
+        "4/16"
+      ],
+      "explanation": "Multiply by 2, 3, and 4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
-
     {
       "id": "ord_01",
       "skill": "ordering_fractions",
       "difficulty": 1,
-      "misconceptions": ["bigger_denominator_bigger"],
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
       "stem": "Which is larger: 1/3 or 1/4?",
       "type": "mcq",
-      "choices": ["1/3", "1/4", "they are equal"],
+      "choices": [
+        "1/3",
+        "1/4",
+        "they are equal"
+      ],
       "answer": "1/3",
       "answer_sympy": "1/3",
-      "explanation": "Same numerator: smaller denominator means larger pieces."
+      "explanation": "Same numerator: smaller denominator means larger pieces.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_02",
       "skill": "ordering_fractions",
       "difficulty": 1,
-      "misconceptions": ["ignore_denominator"],
+      "misconceptions": [
+        "ignore_denominator"
+      ],
       "stem": "Order from smallest to largest: 1/2, 1/5, 1/3",
       "type": "fill",
       "answer": "1/5, 1/3, 1/2",
       "answer_sympy": null,
-      "explanation": "Unit fractions: larger denominator → smaller value."
+      "explanation": "Unit fractions: larger denominator → smaller value.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_03",
       "skill": "ordering_fractions",
       "difficulty": 2,
-      "misconceptions": ["ignore_denominator", "bigger_denominator_bigger"],
+      "misconceptions": [
+        "ignore_denominator",
+        "bigger_denominator_bigger"
+      ],
       "stem": "Which is greater: 2/5 or 3/7?",
       "type": "mcq",
-      "choices": ["2/5", "3/7", "equal"],
+      "choices": [
+        "2/5",
+        "3/7",
+        "equal"
+      ],
       "answer": "3/7",
       "answer_sympy": "3/7",
-      "explanation": "Common denominator 35: 2/5=14/35, 3/7=15/35, so 3/7 is greater."
+      "explanation": "Common denominator 35: 2/5=14/35, 3/7=15/35, so 3/7 is greater.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_04",
       "skill": "ordering_fractions",
       "difficulty": 2,
-      "misconceptions": ["ignore_denominator"],
+      "misconceptions": [
+        "ignore_denominator"
+      ],
       "stem": "Compare 3/8 and 2/5. Which is larger?",
       "type": "mcq",
-      "choices": ["3/8", "2/5", "equal"],
+      "choices": [
+        "3/8",
+        "2/5",
+        "equal"
+      ],
       "answer": "2/5",
       "answer_sympy": "2/5",
-      "explanation": "3/8=0.375, 2/5=0.4."
+      "explanation": "3/8=0.375, 2/5=0.4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_05",
       "skill": "ordering_fractions",
       "difficulty": 2,
-      "misconceptions": ["bigger_denominator_bigger"],
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
       "stem": "True or false: 2/6 is greater than 2/4.",
       "type": "fill",
       "answer": "false",
       "answer_sympy": null,
-      "explanation": "Same numerator: 2/4 > 2/6."
+      "explanation": "Same numerator: 2/4 > 2/6.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_06",
       "skill": "ordering_fractions",
       "difficulty": 3,
-      "misconceptions": ["ignore_denominator"],
+      "misconceptions": [
+        "ignore_denominator"
+      ],
       "stem": "Place these on a number line from 0 to 1: 1/4, 1/2, 3/4. What is the middle value?",
       "type": "fill",
       "answer": "1/2",
       "answer_sympy": "1/2",
-      "explanation": "Halfway between 0 and 1."
+      "explanation": "Halfway between 0 and 1.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "ord_07",
       "skill": "ordering_fractions",
       "difficulty": 2,
-      "misconceptions": ["bigger_denominator_bigger"],
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
       "stem": "Which fraction is closest to 1: 3/4, 2/3, or 1/2?",
       "type": "mcq",
-      "choices": ["3/4", "2/3", "1/2"],
+      "choices": [
+        "3/4",
+        "2/3",
+        "1/2"
+      ],
       "answer": "3/4",
       "answer_sympy": "3/4",
-      "explanation": "3/4=0.75 is closest to 1."
+      "explanation": "3/4=0.75 is closest to 1.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
-
     {
       "id": "add_01",
       "skill": "add_subtract_fractions",
       "difficulty": 1,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 1/5 + 2/5.",
       "type": "fill",
       "answer": "3/5",
       "answer_sympy": "3/5",
-      "explanation": "Same denominator: add numerators only."
+      "explanation": "Same denominator: add numerators only.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_02",
       "skill": "add_subtract_fractions",
       "difficulty": 1,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 4/7 − 1/7.",
       "type": "fill",
       "answer": "3/7",
       "answer_sympy": "3/7",
-      "explanation": "Subtract numerators; keep denominator."
+      "explanation": "Subtract numerators; keep denominator.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_03",
       "skill": "add_subtract_fractions",
       "difficulty": 2,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 1/4 + 1/4.",
       "type": "fill",
       "answer": "1/2",
       "answer_sympy": "1/2",
-      "explanation": "1/4+1/4=2/4=1/2."
+      "explanation": "1/4+1/4=2/4=1/2.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_04",
       "skill": "add_subtract_fractions",
       "difficulty": 2,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 2/3 + 1/6.",
       "type": "fill",
       "answer": "5/6",
       "answer_sympy": "5/6",
-      "explanation": "2/3=4/6; 4/6+1/6=5/6."
+      "explanation": "2/3=4/6; 4/6+1/6=5/6.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_05",
       "skill": "add_subtract_fractions",
       "difficulty": 2,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 5/8 − 1/4.",
       "type": "fill",
       "answer": "3/8",
       "answer_sympy": "3/8",
-      "explanation": "1/4=2/8; 5/8−2/8=3/8."
+      "explanation": "1/4=2/8; 5/8−2/8=3/8.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_06",
       "skill": "add_subtract_fractions",
       "difficulty": 3,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 3/5 + 1/10.",
       "type": "fill",
       "answer": "7/10",
       "answer_sympy": "7/10",
-      "explanation": "3/5=6/10; 6/10+1/10=7/10."
+      "explanation": "3/5=6/10; 6/10+1/10=7/10.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "add_07",
       "skill": "add_subtract_fractions",
       "difficulty": 3,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "What is 7/10 − 2/5?",
       "type": "fill",
       "answer": "3/10",
       "answer_sympy": "3/10",
-      "explanation": "2/5=4/10; 7/10−4/10=3/10."
+      "explanation": "2/5=4/10; 7/10−4/10=3/10.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
-
     {
       "id": "mul_01",
       "skill": "multiply_fractions",
       "difficulty": 1,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "Calculate 1/2 × 1/3.",
       "type": "fill",
       "answer": "1/6",
       "answer_sympy": "1/6",
-      "explanation": "Multiply numerators and denominators: 1×1 / 2×3."
+      "explanation": "Multiply numerators and denominators: 1×1 / 2×3.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_02",
       "skill": "multiply_fractions",
       "difficulty": 1,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "Calculate 2/5 × 1/2.",
       "type": "fill",
       "answer": "1/5",
       "answer_sympy": "1/5",
-      "explanation": "2/5 × 1/2 = 2/10 = 1/5."
+      "explanation": "2/5 × 1/2 = 2/10 = 1/5.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_03",
       "skill": "multiply_fractions",
       "difficulty": 2,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "Calculate 3/4 × 2/3.",
       "type": "fill",
       "answer": "1/2",
       "answer_sympy": "1/2",
-      "explanation": "6/12 = 1/2."
+      "explanation": "6/12 = 1/2.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_04",
       "skill": "multiply_fractions",
       "difficulty": 2,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
       "type": "fill",
       "answer": "1/6",
       "answer_sympy": "1/6",
-      "explanation": "1×2 / 4×3 = 2/12 = 1/6."
+      "explanation": "1×2 / 4×3 = 2/12 = 1/6.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_05",
       "skill": "multiply_fractions",
       "difficulty": 2,
-      "misconceptions": ["multiply_add_confusion", "add_across"],
+      "misconceptions": [
+        "multiply_add_confusion",
+        "add_across"
+      ],
       "stem": "Calculate 3/5 × 5/6.",
       "type": "fill",
       "answer": "1/2",
       "answer_sympy": "1/2",
-      "explanation": "15/30 = 1/2."
+      "explanation": "15/30 = 1/2.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_06",
       "skill": "multiply_fractions",
       "difficulty": 3,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "Calculate 2/3 × 3/8.",
       "type": "fill",
       "answer": "1/4",
       "answer_sympy": "1/4",
-      "explanation": "6/24 = 1/4."
+      "explanation": "6/24 = 1/4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mul_07",
       "skill": "multiply_fractions",
       "difficulty": 3,
-      "misconceptions": ["multiply_add_confusion"],
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
       "stem": "A recipe uses 3/4 cup of flour. You make 1/2 of the recipe. How much flour?",
       "type": "fill",
       "answer": "3/8",
       "answer_sympy": "3/8",
-      "explanation": "3/4 × 1/2 = 3/8."
+      "explanation": "3/4 × 1/2 = 3/8.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
-
     {
       "id": "of_01",
       "skill": "fraction_of",
       "difficulty": 1,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "What is 1/2 of 12?",
       "type": "fill",
       "answer": "6",
       "answer_sympy": "6",
-      "explanation": "12 ÷ 2 = 6."
+      "explanation": "12 ÷ 2 = 6.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "of_02",
       "skill": "fraction_of",
       "difficulty": 1,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "What is 1/4 of 20?",
       "type": "fill",
       "answer": "5",
       "answer_sympy": "5",
-      "explanation": "20 ÷ 4 = 5."
+      "explanation": "20 ÷ 4 = 5.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "of_03",
       "skill": "fraction_of",
       "difficulty": 2,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "What is 2/3 of 15?",
       "type": "fill",
       "answer": "10",
       "answer_sympy": "10",
-      "explanation": "15 ÷ 3 = 5; 5 × 2 = 10."
+      "explanation": "15 ÷ 3 = 5; 5 × 2 = 10.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "of_04",
       "skill": "fraction_of",
       "difficulty": 2,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "What is 3/5 of 25?",
       "type": "fill",
       "answer": "15",
       "answer_sympy": "15",
-      "explanation": "25 ÷ 5 = 5; 5 × 3 = 15."
+      "explanation": "25 ÷ 5 = 5; 5 × 3 = 15.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "of_05",
       "skill": "fraction_of",
       "difficulty": 2,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "A pizza has 8 slices. You eat 3/4 of it. How many slices?",
       "type": "fill",
       "answer": "6",
       "answer_sympy": "6",
-      "explanation": "3/4 of 8 = 6."
+      "explanation": "3/4 of 8 = 6.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "of_06",
       "skill": "fraction_of",
       "difficulty": 3,
-      "misconceptions": ["of_means_divide_wrong"],
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
       "stem": "What is 5/6 of 18?",
       "type": "fill",
       "answer": "15",
       "answer_sympy": "15",
-      "explanation": "18 ÷ 6 = 3; 3 × 5 = 15."
+      "explanation": "18 ÷ 6 = 3; 3 × 5 = 15.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
-
     {
       "id": "mix_01",
       "skill": "mixed_improper",
       "difficulty": 1,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Convert 5/4 to a mixed number.",
       "type": "fill",
       "answer": "1 1/4",
       "answer_sympy": "5/4",
-      "explanation": "5÷4 = 1 remainder 1 → 1 1/4."
+      "explanation": "5÷4 = 1 remainder 1 → 1 1/4.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mix_02",
       "skill": "mixed_improper",
       "difficulty": 1,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Convert 1 2/3 to an improper fraction.",
       "type": "fill",
       "answer": "5/3",
       "answer_sympy": "5/3",
-      "explanation": "1×3+2 = 5 → 5/3."
+      "explanation": "1×3+2 = 5 → 5/3.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mix_03",
       "skill": "mixed_improper",
       "difficulty": 2,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Convert 11/3 to a mixed number.",
       "type": "fill",
       "answer": "3 2/3",
       "answer_sympy": "11/3",
-      "explanation": "11÷3 = 3 remainder 2."
+      "explanation": "11÷3 = 3 remainder 2.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mix_04",
       "skill": "mixed_improper",
       "difficulty": 2,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Convert 2 1/5 to an improper fraction.",
       "type": "fill",
       "answer": "11/5",
       "answer_sympy": "11/5",
-      "explanation": "2×5+1 = 11 → 11/5."
+      "explanation": "2×5+1 = 11 → 11/5.",
+      "form": "A",
+      "distractor_misconceptions": {}
     },
     {
       "id": "mix_05",
       "skill": "mixed_improper",
       "difficulty": 3,
-      "misconceptions": ["add_across"],
+      "misconceptions": [
+        "add_across"
+      ],
       "stem": "Calculate 1 1/2 + 1/2.",
       "type": "fill",
       "answer": "2",
       "answer_sympy": "2",
-      "explanation": "1 1/2 = 3/2; 3/2+1/2=4/2=2."
+      "explanation": "1 1/2 = 3/2; 3/2+1/2=4/2=2.",
+      "form": "A",
+      "distractor_misconceptions": {}
+    },
+    {
+      "id": "eq_b01",
+      "skill": "equivalent_fractions",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Which fraction is equivalent to 1/3?",
+      "type": "mcq",
+      "choices": [
+        "2/5",
+        "2/6",
+        "3/5",
+        "1/6"
+      ],
+      "answer": "2/6",
+      "answer_sympy": "2/6",
+      "explanation": "Multiply num and den by 2.",
+      "distractor_misconceptions": {
+        "2/5": "equivalent_add_same",
+        "3/5": "equivalent_add_same",
+        "1/6": "bigger_denominator_bigger"
+      }
+    },
+    {
+      "id": "eq_b02",
+      "skill": "equivalent_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Simplify 8/12.",
+      "type": "mcq",
+      "choices": [
+        "2/3",
+        "4/6",
+        "3/4",
+        "1/2"
+      ],
+      "answer": "2/3",
+      "answer_sympy": "2/3",
+      "explanation": "Divide by 4.",
+      "distractor_misconceptions": {
+        "4/6": "equivalent_add_same",
+        "3/4": "ignore_denominator",
+        "1/2": "ignore_denominator"
+      }
+    },
+    {
+      "id": "eq_b03",
+      "skill": "equivalent_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Fill: 3/4 = ?/12",
+      "type": "mcq",
+      "choices": [
+        "6",
+        "8",
+        "9",
+        "7"
+      ],
+      "answer": "9",
+      "answer_sympy": "9",
+      "explanation": "Denominator ×3 so numerator ×3.",
+      "distractor_misconceptions": {
+        "6": "equivalent_add_same",
+        "8": "equivalent_add_same",
+        "7": "equivalent_add_same"
+      }
+    },
+    {
+      "id": "eq_c01",
+      "skill": "equivalent_fractions",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Which is equivalent to 2/5?",
+      "type": "mcq",
+      "choices": [
+        "4/10",
+        "3/6",
+        "2/10",
+        "5/2"
+      ],
+      "answer": "4/10",
+      "answer_sympy": "4/10",
+      "explanation": "Multiply by 2/2.",
+      "distractor_misconceptions": {
+        "3/6": "equivalent_add_same",
+        "2/10": "ignore_denominator",
+        "5/2": "ignore_denominator"
+      }
+    },
+    {
+      "id": "eq_c02",
+      "skill": "equivalent_fractions",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Are 2/8 and 1/4 equivalent?",
+      "type": "mcq",
+      "choices": [
+        "yes",
+        "no",
+        "cannot tell"
+      ],
+      "answer": "yes",
+      "answer_sympy": null,
+      "explanation": "2/8 simplifies to 1/4.",
+      "distractor_misconceptions": {
+        "no": "equivalent_add_same"
+      }
+    },
+    {
+      "id": "eq_c03",
+      "skill": "equivalent_fractions",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Which equals 5/6?",
+      "type": "mcq",
+      "choices": [
+        "10/12",
+        "6/5",
+        "5/12",
+        "10/6"
+      ],
+      "answer": "10/12",
+      "answer_sympy": "10/12",
+      "explanation": "Multiply by 2/2.",
+      "distractor_misconceptions": {
+        "6/5": "ignore_denominator",
+        "5/12": "ignore_denominator",
+        "10/6": "ignore_denominator"
+      }
+    },
+    {
+      "id": "eq_a07",
+      "skill": "equivalent_fractions",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Which is equivalent to 3/9?",
+      "type": "mcq",
+      "choices": [
+        "1/3",
+        "3/6",
+        "2/3",
+        "9/3"
+      ],
+      "answer": "1/3",
+      "answer_sympy": "1/3",
+      "explanation": "Divide by 3.",
+      "distractor_misconceptions": {
+        "3/6": "equivalent_add_same",
+        "2/3": "ignore_denominator",
+        "9/3": "ignore_denominator"
+      }
+    },
+    {
+      "id": "eq_a08",
+      "skill": "equivalent_fractions",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "equivalent_add_same"
+      ],
+      "stem": "Complete: 4/5 = 8/?",
+      "type": "mcq",
+      "choices": [
+        "10",
+        "9",
+        "12",
+        "16"
+      ],
+      "answer": "10",
+      "answer_sympy": "10",
+      "explanation": "Numerator ×2 ⇒ denominator ×2.",
+      "distractor_misconceptions": {
+        "9": "equivalent_add_same",
+        "12": "equivalent_add_same",
+        "16": "equivalent_add_same"
+      }
+    },
+    {
+      "id": "ord_b01",
+      "skill": "ordering_fractions",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
+      "stem": "Which is larger: 1/5 or 1/2?",
+      "type": "mcq",
+      "choices": [
+        "1/5",
+        "1/2",
+        "equal"
+      ],
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "explanation": "Same numerator: smaller den is larger.",
+      "distractor_misconceptions": {
+        "1/5": "bigger_denominator_bigger"
+      }
+    },
+    {
+      "id": "ord_b02",
+      "skill": "ordering_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Which is greater: 3/5 or 4/7?",
+      "type": "mcq",
+      "choices": [
+        "3/5",
+        "4/7",
+        "equal"
+      ],
+      "answer": "3/5",
+      "answer_sympy": "3/5",
+      "explanation": "3/5=0.6, 4/7≈0.57.",
+      "distractor_misconceptions": {
+        "4/7": "ignore_denominator"
+      }
+    },
+    {
+      "id": "ord_b03",
+      "skill": "ordering_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Order smallest to largest: 2/3, 1/4, 1/2",
+      "type": "mcq",
+      "choices": [
+        "1/4, 1/2, 2/3",
+        "1/2, 1/4, 2/3",
+        "2/3, 1/2, 1/4"
+      ],
+      "answer": "1/4, 1/2, 2/3",
+      "answer_sympy": null,
+      "explanation": "Convert or compare carefully.",
+      "distractor_misconceptions": {
+        "1/2, 1/4, 2/3": "ignore_denominator",
+        "2/3, 1/2, 1/4": "ignore_denominator"
+      }
+    },
+    {
+      "id": "ord_c01",
+      "skill": "ordering_fractions",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
+      "stem": "Which is smaller: 1/6 or 1/8?",
+      "type": "mcq",
+      "choices": [
+        "1/6",
+        "1/8",
+        "equal"
+      ],
+      "answer": "1/8",
+      "answer_sympy": "1/8",
+      "explanation": "Unit fractions: larger den is smaller value.",
+      "distractor_misconceptions": {
+        "1/6": "bigger_denominator_bigger"
+      }
+    },
+    {
+      "id": "ord_c02",
+      "skill": "ordering_fractions",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Which is greater: 5/8 or 3/5?",
+      "type": "mcq",
+      "choices": [
+        "5/8",
+        "3/5",
+        "equal"
+      ],
+      "answer": "5/8",
+      "answer_sympy": "5/8",
+      "explanation": "5/8=0.625, 3/5=0.6.",
+      "distractor_misconceptions": {
+        "3/5": "ignore_denominator"
+      }
+    },
+    {
+      "id": "ord_c03",
+      "skill": "ordering_fractions",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Which is closest to 1/2: 2/5, 3/7, or 4/9?",
+      "type": "mcq",
+      "choices": [
+        "2/5",
+        "3/7",
+        "4/9"
+      ],
+      "answer": "4/9",
+      "answer_sympy": "4/9",
+      "explanation": "2/5=0.4, 3/7≈0.429, 4/9≈0.444; 4/9 is closest to 1/2.",
+      "distractor_misconceptions": {
+        "2/5": "ignore_denominator",
+        "3/7": "ignore_denominator"
+      }
+    },
+    {
+      "id": "ord_a08",
+      "skill": "ordering_fractions",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Which is greater: 4/9 or 3/7?",
+      "type": "mcq",
+      "choices": [
+        "4/9",
+        "3/7",
+        "equal"
+      ],
+      "answer": "4/9",
+      "answer_sympy": "4/9",
+      "explanation": "4/9≈0.444, 3/7≈0.429.",
+      "distractor_misconceptions": {
+        "3/7": "ignore_denominator"
+      }
+    },
+    {
+      "id": "ord_a09",
+      "skill": "ordering_fractions",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "bigger_denominator_bigger"
+      ],
+      "stem": "True or false: 3/8 is greater than 3/5.",
+      "type": "mcq",
+      "choices": [
+        "true",
+        "false"
+      ],
+      "answer": "false",
+      "answer_sympy": null,
+      "explanation": "Same numerator: 3/5 > 3/8.",
+      "distractor_misconceptions": {
+        "true": "bigger_denominator_bigger"
+      }
+    },
+    {
+      "id": "add_b01",
+      "skill": "add_subtract_fractions",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 2/9 + 4/9.",
+      "type": "mcq",
+      "choices": [
+        "6/9",
+        "6/18",
+        "8/9",
+        "2/4"
+      ],
+      "answer": "6/9",
+      "answer_sympy": "6/9",
+      "explanation": "Add numerators only.",
+      "distractor_misconceptions": {
+        "6/18": "add_across",
+        "8/9": "add_across",
+        "2/4": "add_across"
+      }
+    },
+    {
+      "id": "add_b02",
+      "skill": "add_subtract_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 1/3 + 1/6.",
+      "type": "mcq",
+      "choices": [
+        "1/2",
+        "2/9",
+        "1/9",
+        "2/6"
+      ],
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "explanation": "1/3=2/6; 2/6+1/6=3/6=1/2.",
+      "distractor_misconceptions": {
+        "2/9": "add_across",
+        "1/9": "add_across",
+        "2/6": "add_across"
+      }
+    },
+    {
+      "id": "add_b03",
+      "skill": "add_subtract_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 7/10 − 1/5.",
+      "type": "mcq",
+      "choices": [
+        "1/2",
+        "6/5",
+        "6/10",
+        "1/10"
+      ],
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "explanation": "1/5=2/10; 7/10−2/10=5/10=1/2.",
+      "distractor_misconceptions": {
+        "6/5": "add_across",
+        "6/10": "add_across",
+        "1/10": "add_across"
+      }
+    },
+    {
+      "id": "add_c01",
+      "skill": "add_subtract_fractions",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 3/8 + 2/8.",
+      "type": "mcq",
+      "choices": [
+        "5/8",
+        "5/16",
+        "6/8",
+        "1/2"
+      ],
+      "answer": "5/8",
+      "answer_sympy": "5/8",
+      "explanation": "Same den: add nums.",
+      "distractor_misconceptions": {
+        "5/16": "add_across",
+        "6/8": "add_across"
+      }
+    },
+    {
+      "id": "add_c02",
+      "skill": "add_subtract_fractions",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 3/4 − 1/8.",
+      "type": "mcq",
+      "choices": [
+        "5/8",
+        "2/4",
+        "2/8",
+        "4/12"
+      ],
+      "answer": "5/8",
+      "answer_sympy": "5/8",
+      "explanation": "3/4=6/8; 6/8−1/8=5/8.",
+      "distractor_misconceptions": {
+        "2/4": "add_across",
+        "2/8": "add_across",
+        "4/12": "add_across"
+      }
+    },
+    {
+      "id": "add_c03",
+      "skill": "add_subtract_fractions",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 2/5 + 3/10.",
+      "type": "mcq",
+      "choices": [
+        "7/10",
+        "5/15",
+        "5/10",
+        "6/10"
+      ],
+      "answer": "7/10",
+      "answer_sympy": "7/10",
+      "explanation": "2/5=4/10; 4/10+3/10=7/10.",
+      "distractor_misconceptions": {
+        "5/15": "add_across",
+        "5/10": "add_across",
+        "6/10": "add_across"
+      }
+    },
+    {
+      "id": "add_a08",
+      "skill": "add_subtract_fractions",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 5/6 − 1/3.",
+      "type": "mcq",
+      "choices": [
+        "1/2",
+        "4/3",
+        "4/6",
+        "1/6"
+      ],
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "explanation": "1/3=2/6; 5/6−2/6=3/6=1/2.",
+      "distractor_misconceptions": {
+        "4/3": "add_across",
+        "4/6": "add_across",
+        "1/6": "add_across"
+      }
+    },
+    {
+      "id": "add_a09",
+      "skill": "add_subtract_fractions",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "add_across"
+      ],
+      "stem": "Calculate 1/2 + 2/5.",
+      "type": "mcq",
+      "choices": [
+        "9/10",
+        "3/7",
+        "3/10",
+        "2/7"
+      ],
+      "answer": "9/10",
+      "answer_sympy": "9/10",
+      "explanation": "1/2=5/10; 5/10+4/10=9/10.",
+      "distractor_misconceptions": {
+        "3/7": "add_across",
+        "3/10": "add_across",
+        "2/7": "add_across"
+      }
+    },
+    {
+      "id": "mul_b01",
+      "skill": "multiply_fractions",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 1/4 × 1/2.",
+      "type": "mcq",
+      "choices": [
+        "1/8",
+        "2/6",
+        "1/6",
+        "1/2"
+      ],
+      "answer": "1/8",
+      "answer_sympy": "1/8",
+      "explanation": "Multiply nums and dens.",
+      "distractor_misconceptions": {
+        "2/6": "multiply_add_confusion",
+        "1/6": "multiply_add_confusion",
+        "1/2": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_b02",
+      "skill": "multiply_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 2/3 × 3/5.",
+      "type": "mcq",
+      "choices": [
+        "2/5",
+        "5/8",
+        "6/15",
+        "1/5"
+      ],
+      "answer": "2/5",
+      "answer_sympy": "2/5",
+      "explanation": "2/3×3/5=6/15=2/5.",
+      "distractor_misconceptions": {
+        "5/8": "multiply_add_confusion",
+        "6/15": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_b03",
+      "skill": "multiply_fractions",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 3/4 × 2/5.",
+      "type": "mcq",
+      "choices": [
+        "3/10",
+        "5/9",
+        "6/20",
+        "1/2"
+      ],
+      "answer": "3/10",
+      "answer_sympy": "3/10",
+      "explanation": "6/20=3/10.",
+      "distractor_misconceptions": {
+        "5/9": "multiply_add_confusion",
+        "6/20": "multiply_add_confusion",
+        "1/2": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_c01",
+      "skill": "multiply_fractions",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 1/5 × 1/3.",
+      "type": "mcq",
+      "choices": [
+        "1/15",
+        "2/8",
+        "1/8",
+        "1/2"
+      ],
+      "answer": "1/15",
+      "answer_sympy": "1/15",
+      "explanation": "Multiply across.",
+      "distractor_misconceptions": {
+        "2/8": "multiply_add_confusion",
+        "1/8": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_c02",
+      "skill": "multiply_fractions",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 4/5 × 1/2.",
+      "type": "mcq",
+      "choices": [
+        "2/5",
+        "5/7",
+        "4/10",
+        "1/5"
+      ],
+      "answer": "2/5",
+      "answer_sympy": "2/5",
+      "explanation": "4/10=2/5.",
+      "distractor_misconceptions": {
+        "5/7": "multiply_add_confusion",
+        "4/10": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_c03",
+      "skill": "multiply_fractions",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 5/6 × 3/4.",
+      "type": "mcq",
+      "choices": [
+        "5/8",
+        "8/10",
+        "15/24",
+        "2/3"
+      ],
+      "answer": "5/8",
+      "answer_sympy": "5/8",
+      "explanation": "15/24=5/8.",
+      "distractor_misconceptions": {
+        "8/10": "multiply_add_confusion",
+        "15/24": "multiply_add_confusion",
+        "2/3": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_a08",
+      "skill": "multiply_fractions",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 2/5 × 5/6.",
+      "type": "mcq",
+      "choices": [
+        "1/3",
+        "7/11",
+        "10/30",
+        "2/6"
+      ],
+      "answer": "1/3",
+      "answer_sympy": "1/3",
+      "explanation": "10/30=1/3.",
+      "distractor_misconceptions": {
+        "7/11": "multiply_add_confusion",
+        "10/30": "multiply_add_confusion",
+        "2/6": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "mul_a09",
+      "skill": "multiply_fractions",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "multiply_add_confusion"
+      ],
+      "stem": "Calculate 3/8 × 4/9.",
+      "type": "mcq",
+      "choices": [
+        "1/6",
+        "7/17",
+        "12/72",
+        "3/9"
+      ],
+      "answer": "1/6",
+      "answer_sympy": "1/6",
+      "explanation": "12/72=1/6.",
+      "distractor_misconceptions": {
+        "7/17": "multiply_add_confusion",
+        "12/72": "multiply_add_confusion",
+        "3/9": "multiply_add_confusion"
+      }
+    },
+    {
+      "id": "of_b01",
+      "skill": "fraction_of",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 1/4 of 20?",
+      "type": "mcq",
+      "choices": [
+        "5",
+        "4",
+        "16",
+        "24"
+      ],
+      "answer": "5",
+      "answer_sympy": "5",
+      "explanation": "20÷4=5.",
+      "distractor_misconceptions": {
+        "4": "of_means_divide_wrong",
+        "16": "of_means_divide_wrong",
+        "24": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_b02",
+      "skill": "fraction_of",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 2/5 of 30?",
+      "type": "mcq",
+      "choices": [
+        "12",
+        "15",
+        "10",
+        "6"
+      ],
+      "answer": "12",
+      "answer_sympy": "12",
+      "explanation": "30÷5=6; 6×2=12.",
+      "distractor_misconceptions": {
+        "15": "of_means_divide_wrong",
+        "10": "of_means_divide_wrong",
+        "6": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_b03",
+      "skill": "fraction_of",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 3/4 of 16?",
+      "type": "mcq",
+      "choices": [
+        "12",
+        "4",
+        "19",
+        "8"
+      ],
+      "answer": "12",
+      "answer_sympy": "12",
+      "explanation": "16÷4=4; 4×3=12.",
+      "distractor_misconceptions": {
+        "4": "of_means_divide_wrong",
+        "19": "of_means_divide_wrong",
+        "8": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_c01",
+      "skill": "fraction_of",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 1/3 of 18?",
+      "type": "mcq",
+      "choices": [
+        "6",
+        "3",
+        "15",
+        "9"
+      ],
+      "answer": "6",
+      "answer_sympy": "6",
+      "explanation": "18÷3=6.",
+      "distractor_misconceptions": {
+        "3": "of_means_divide_wrong",
+        "15": "of_means_divide_wrong",
+        "9": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_c02",
+      "skill": "fraction_of",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 3/5 of 25?",
+      "type": "mcq",
+      "choices": [
+        "15",
+        "5",
+        "22",
+        "10"
+      ],
+      "answer": "15",
+      "answer_sympy": "15",
+      "explanation": "25÷5×3=15.",
+      "distractor_misconceptions": {
+        "5": "of_means_divide_wrong",
+        "22": "of_means_divide_wrong",
+        "10": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_c03",
+      "skill": "fraction_of",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 5/6 of 24?",
+      "type": "mcq",
+      "choices": [
+        "20",
+        "4",
+        "19",
+        "30"
+      ],
+      "answer": "20",
+      "answer_sympy": "20",
+      "explanation": "24÷6×5=20.",
+      "distractor_misconceptions": {
+        "4": "of_means_divide_wrong",
+        "19": "of_means_divide_wrong",
+        "30": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_a07",
+      "skill": "fraction_of",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 2/3 of 27?",
+      "type": "mcq",
+      "choices": [
+        "18",
+        "9",
+        "25",
+        "12"
+      ],
+      "answer": "18",
+      "answer_sympy": "18",
+      "explanation": "27÷3×2=18.",
+      "distractor_misconceptions": {
+        "9": "of_means_divide_wrong",
+        "25": "of_means_divide_wrong",
+        "12": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "of_a08",
+      "skill": "fraction_of",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "of_means_divide_wrong"
+      ],
+      "stem": "What is 4/7 of 21?",
+      "type": "mcq",
+      "choices": [
+        "12",
+        "3",
+        "17",
+        "28"
+      ],
+      "answer": "12",
+      "answer_sympy": "12",
+      "explanation": "21÷7×4=12.",
+      "distractor_misconceptions": {
+        "3": "of_means_divide_wrong",
+        "17": "of_means_divide_wrong",
+        "28": "of_means_divide_wrong"
+      }
+    },
+    {
+      "id": "mix_b01",
+      "skill": "mixed_improper",
+      "difficulty": 1,
+      "form": "B",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 7/4 to a mixed number.",
+      "type": "mcq",
+      "choices": [
+        "1 3/4",
+        "1 1/4",
+        "3 1/4",
+        "7/4"
+      ],
+      "answer": "1 3/4",
+      "answer_sympy": null,
+      "explanation": "7÷4=1 remainder 3.",
+      "distractor_misconceptions": {
+        "1 1/4": "ignore_denominator",
+        "3 1/4": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_b02",
+      "skill": "mixed_improper",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 2 1/5 to an improper fraction.",
+      "type": "mcq",
+      "choices": [
+        "11/5",
+        "10/5",
+        "21/5",
+        "3/5"
+      ],
+      "answer": "11/5",
+      "answer_sympy": "11/5",
+      "explanation": "2×5+1=11.",
+      "distractor_misconceptions": {
+        "10/5": "ignore_denominator",
+        "21/5": "ignore_denominator",
+        "3/5": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_b03",
+      "skill": "mixed_improper",
+      "difficulty": 2,
+      "form": "B",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 11/3 to a mixed number.",
+      "type": "mcq",
+      "choices": [
+        "3 2/3",
+        "2 3/3",
+        "4 1/3",
+        "3 1/3"
+      ],
+      "answer": "3 2/3",
+      "answer_sympy": null,
+      "explanation": "11÷3=3 remainder 2.",
+      "distractor_misconceptions": {
+        "4 1/3": "ignore_denominator",
+        "3 1/3": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_c01",
+      "skill": "mixed_improper",
+      "difficulty": 1,
+      "form": "C",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 9/4 to a mixed number.",
+      "type": "mcq",
+      "choices": [
+        "2 1/4",
+        "1 3/4",
+        "2 3/4",
+        "9/4"
+      ],
+      "answer": "2 1/4",
+      "answer_sympy": null,
+      "explanation": "9÷4=2 remainder 1.",
+      "distractor_misconceptions": {
+        "1 3/4": "ignore_denominator",
+        "2 3/4": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_c02",
+      "skill": "mixed_improper",
+      "difficulty": 2,
+      "form": "C",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 1 2/3 to improper.",
+      "type": "mcq",
+      "choices": [
+        "5/3",
+        "3/3",
+        "6/3",
+        "2/3"
+      ],
+      "answer": "5/3",
+      "answer_sympy": "5/3",
+      "explanation": "1×3+2=5.",
+      "distractor_misconceptions": {
+        "3/3": "ignore_denominator",
+        "6/3": "ignore_denominator",
+        "2/3": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_c03",
+      "skill": "mixed_improper",
+      "difficulty": 3,
+      "form": "C",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 17/5 to mixed.",
+      "type": "mcq",
+      "choices": [
+        "3 2/5",
+        "2 3/5",
+        "4 1/5",
+        "3 1/5"
+      ],
+      "answer": "3 2/5",
+      "answer_sympy": null,
+      "explanation": "17÷5=3 remainder 2.",
+      "distractor_misconceptions": {
+        "2 3/5": "ignore_denominator",
+        "4 1/5": "ignore_denominator",
+        "3 1/5": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_a06",
+      "skill": "mixed_improper",
+      "difficulty": 2,
+      "form": "A",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 3 1/4 to improper.",
+      "type": "mcq",
+      "choices": [
+        "13/4",
+        "12/4",
+        "7/4",
+        "31/4"
+      ],
+      "answer": "13/4",
+      "answer_sympy": "13/4",
+      "explanation": "3×4+1=13.",
+      "distractor_misconceptions": {
+        "12/4": "ignore_denominator",
+        "7/4": "ignore_denominator",
+        "31/4": "ignore_denominator"
+      }
+    },
+    {
+      "id": "mix_a07",
+      "skill": "mixed_improper",
+      "difficulty": 3,
+      "form": "A",
+      "misconceptions": [
+        "ignore_denominator"
+      ],
+      "stem": "Convert 14/6 to mixed in simplest form.",
+      "type": "mcq",
+      "choices": [
+        "2 1/3",
+        "2 2/6",
+        "1 4/6",
+        "2 4/6"
+      ],
+      "answer": "2 1/3",
+      "answer_sympy": null,
+      "explanation": "14/6=2 2/6=2 1/3.",
+      "distractor_misconceptions": {
+        "2 2/6": "ignore_denominator",
+        "1 4/6": "ignore_denominator",
+        "2 4/6": "ignore_denominator"
+      }
     }
   ]
 }

@@ -11,8 +11,9 @@ from typing import Any, Callable
 import numpy as np
 
 from pll.bandit import DiscountedContextualTS, make_context, mastery_bin
-from pll.config import DELAYED_CHECK_ITEMS, METHODS
+from pll.config import CONTENT_VERSION, DELAYED_CHECK_ITEMS, METHODS
 from pll.diagnostic import DiagnosticResult, make_simulated_student, run_diagnostic
+from pll.events import append_event, log_item_response, new_session_id
 from pll.lessons import Lesson, generate_lesson, render_lesson_markdown, save_lesson
 from pll.parent_summary import METHOD_PLAIN, render_parent_summary
 from pll.prompts import SKILL_LABELS
@@ -43,10 +44,14 @@ class SessionResult:
     parent_summary: str
     effort_note: str
     created_at: str
+    session_id: str = ""
+    event_log: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "student_name": self.student_name,
+            "session_id": self.session_id,
+            "event_log": self.event_log,
             "created_at": self.created_at,
             "method": self.method,
             "method_index": self.method_index,
@@ -163,13 +168,35 @@ def run_session(
     bank = bank or QuestionBank.load()
     rng = np.random.default_rng(seed)
     bandit = bandit or DiscountedContextualTS(rng=rng)
+    session_id = new_session_id()
+    respondent = "human" if mode == "interactive" else "simulated"
 
     if mode == "interactive":
         answer_fn = interactive_answer_fn
     else:
         answer_fn = make_simulated_student(true_ability=0.42, seed=seed)
 
+    append_event(
+        session_id,
+        "session_start",
+        learner_id=student_name,
+        payload={"mode": mode, "content_version": CONTENT_VERSION, "respondent": respondent},
+    )
+
     diagnostic = run_diagnostic(bank, answer_fn, n_items=n_diagnostic, seed=seed)
+    for t in diagnostic.trials:
+        log_item_response(
+            session_id,
+            learner_id=student_name,
+            item_id=t.question_id,
+            skill=t.skill,
+            method=None,
+            response=t.response,
+            correct=t.correct,
+            outcome_type="diagnostic",
+            content_version=CONTENT_VERSION,
+            respondent=respondent,
+        )
     context = make_context(diagnostic.ability)
     # Thompson sample for learning; for very early/cold picks, prefer posterior mean
     # so novices don't randomly get problem-first in the pitch demo.
@@ -178,6 +205,19 @@ def run_session(
     else:
         method_idx = bandit.select(context)
     method = METHODS[method_idx]
+    policy_probs = bandit.mean_rewards(context).tolist()
+    append_event(
+        session_id,
+        "method_selected",
+        learner_id=student_name,
+        payload={
+            "method": method,
+            "method_index": method_idx,
+            "context": context.tolist(),
+            "policy_probs": policy_probs,
+            "content_version": CONTENT_VERSION,
+        },
+    )
 
     # Prefer a misconception seen on the weakest skill's missed items.
     weak_miss_misc: dict[str, int] = {}
@@ -209,9 +249,39 @@ def run_session(
         answer_fn=answer_fn,
         exclude_ids=used,
     )
+    for item in delayed.items:
+        log_item_response(
+            session_id,
+            learner_id=student_name,
+            item_id=item["id"],
+            skill=diagnostic.weakest_skill,
+            method=method,
+            response=item["response"],
+            correct=item["correct"],
+            outcome_type="immediate_post",
+            context=context.tolist(),
+            policy_probs=policy_probs,
+            content_version=CONTENT_VERSION,
+            model_id=lesson.model_name or lesson.source,
+            respondent=respondent,
+        )
 
     # Bandit reward = delayed unassisted score (never practice score).
+    # Note: true delayed_24h outcomes should call bandit.update from the pilot Session-2 path.
     bandit.update(method_idx, context, delayed.score)
+    append_event(
+        session_id,
+        "session_end",
+        learner_id=student_name,
+        payload={
+            "method": method,
+            "delayed_score": delayed.score,
+            "outcome_type": "immediate_post",
+            "lesson_ok": lesson.lesson_ok,
+            "answers_ok": lesson.answers_ok,
+            "all_verified": lesson.all_verified,
+        },
+    )
 
     effort = _effort_note(diagnostic)
     summary = render_parent_summary(
@@ -225,6 +295,8 @@ def run_session(
         bank_misconceptions=bank.misconceptions,
     )
 
+    from pll.events import event_path
+
     return SessionResult(
         student_name=student_name,
         diagnostic=diagnostic,
@@ -235,6 +307,8 @@ def run_session(
         parent_summary=summary,
         effort_note=effort,
         created_at=datetime.now(timezone.utc).isoformat(),
+        session_id=session_id,
+        event_log=str(event_path(session_id)),
     )
 
 

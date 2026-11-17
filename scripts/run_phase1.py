@@ -24,6 +24,12 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=RNG_SEED)
     parser.add_argument("--data", default=str(ROOT / DATA_PATH))
     parser.add_argument("--out-dir", default=str(ROOT / OUTPUT_DIR))
+    parser.add_argument(
+        "--profile",
+        default="demo",
+        choices=("demo", "neutral", "adversarial"),
+        help="Sim effect profile. demo=pitch-scaled; neutral/adversarial for honest stress tests.",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -45,8 +51,10 @@ def main() -> None:
         f"P(G)={params.p_g:.3f}  P(S)={params.p_s:.3f}"
     )
 
-    print(f"\nSimulating {args.students} students (seed={args.seed})…")
-    results = run_comparison(params, n_students=args.students, seed=args.seed)
+    print(f"\nSimulating {args.students} students (seed={args.seed}, profile={args.profile})…")
+    results = run_comparison(
+        params, n_students=args.students, seed=args.seed, profile=args.profile
+    )
     print(summarize(results))
 
     chart = plot_time_to_mastery(
@@ -61,6 +69,8 @@ def main() -> None:
         "bkt": params.__dict__,
         "n_students": args.students,
         "seed": args.seed,
+        "profile": args.profile,
+        "note": "demo profile is pitch-scaled; use outputs/eval for scientific ablations",
         "policies": {
             name: {
                 "mean_sessions": float(sum(r.sessions_to_mastery) / len(r.sessions_to_mastery)),

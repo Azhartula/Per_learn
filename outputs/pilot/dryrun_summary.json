@@ -1,0 +1,180 @@
+{
+  "note": "SIMULATED protocol dry-run. Not human efficacy evidence.",
+  "n": 16,
+  "seed": 42,
+  "content_version": 2,
+  "rows": [
+    {
+      "learner": "dryrun_00",
+      "session_id": "f3adfacadd4c",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_01",
+      "session_id": "fef83b0947ef",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.3333333333333333,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_02",
+      "session_id": "d88d55eba42d",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "skill": "add_subtract_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 1.0,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_03",
+      "session_id": "e7545dab0d39",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_04",
+      "session_id": "e1a60f514dd4",
+      "arm": "adaptive_method",
+      "method": "visual",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.6666666666666666,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_05",
+      "session_id": "cd10343beb5f",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.3333333333333333,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_06",
+      "session_id": "90a9d4e32d67",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.0,
+      "delayed_score": 0.6666666666666666,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_07",
+      "session_id": "5f8681ca0bc3",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.0,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_08",
+      "session_id": "5f632da8a687",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "skill": "add_subtract_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_09",
+      "session_id": "de97fbdeddba",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "ordering_fractions",
+      "immediate_score": 0.0,
+      "delayed_score": 0.6666666666666666,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_10",
+      "session_id": "75957a1a75ad",
+      "arm": "adaptive_method",
+      "method": "worked_example",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.0,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_11",
+      "session_id": "cf916e8db60d",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "equivalent_fractions",
+      "immediate_score": 1.0,
+      "delayed_score": 0.5,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_12",
+      "session_id": "c955a1b59a91",
+      "arm": "adaptive_method",
+      "method": "story_analogy",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_13",
+      "session_id": "8b602f2d3ed5",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 1.0,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_14",
+      "session_id": "a6d7b7963bb8",
+      "arm": "adaptive_method",
+      "method": "problem_first",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.5,
+      "delayed_score": 0.5,
+      "lesson_ok": true
+    },
+    {
+      "learner": "dryrun_15",
+      "session_id": "9c9804280cf4",
+      "arm": "fixed_worked_example",
+      "method": "worked_example",
+      "skill": "equivalent_fractions",
+      "immediate_score": 0.0,
+      "delayed_score": 0.5,
+      "lesson_ok": true
+    }
+  ],
+  "by_arm": {
+    "adaptive_method": {
+      "n": 8,
+      "mean_delayed": 0.5625,
+      "std_delayed": 0.28083633600203445
+    },
+    "fixed_worked_example": {
+      "n": 8,
+      "mean_delayed": 0.5,
+      "std_delayed": 0.29546842014263947
+    }
+  }
+}

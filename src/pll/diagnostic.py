@@ -120,8 +120,12 @@ def run_diagnostic(
         ability = _update_ability(ability, correct, q.difficulty)
         skill_correct[q.skill].append(correct)
         skill_counts[q.skill] = skill_counts.get(q.skill, 0) + 1
+        tagged = ()
         if not correct:
-            for m in q.misconceptions:
+            # Prefer distractor→misconception map; fall back to item tags only if unknown.
+            mapped = bank.misconception_from_response(q, response)
+            tagged = tuple(mapped) if mapped else tuple(q.misconceptions)
+            for m in tagged:
                 misconception_hits[m] = misconception_hits.get(m, 0) + 1
         trials.append(
             Trial(
@@ -130,7 +134,7 @@ def run_diagnostic(
                 difficulty=q.difficulty,
                 correct=correct,
                 response=str(response),
-                misconceptions=q.misconceptions,
+                misconceptions=tagged if not correct else (),
             )
         )
 

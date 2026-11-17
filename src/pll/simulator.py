@@ -11,13 +11,11 @@ from pll.bkt import BKTParams, update_mastery
 from pll.config import (
     DELAYED_CHECK_ITEMS,
     MASTERY_THRESHOLD,
-    MATCH_BOOST,
     MAX_SESSIONS,
     METHODS,
-    MISMATCH_PENALTY,
-    NEAR_MATCH,
     N_STUDENTS,
     PRACTICE_ITEMS,
+    SIM_PROFILES,
     STREAK_REQUIRED,
 )
 
@@ -28,6 +26,28 @@ BIN_BEST = {
     1: 2,  # intermediate → visual
     2: 1,  # advanced → problem first
 }
+
+
+@dataclass
+class EffectProfile:
+    name: str
+    match_boost: float
+    near_match: float
+    mismatch_penalty: float
+    bandit_warm_start: bool
+
+
+def get_effect_profile(name: str = "neutral") -> EffectProfile:
+    if name not in SIM_PROFILES:
+        raise ValueError(f"Unknown sim profile {name!r}; choose from {list(SIM_PROFILES)}")
+    raw = SIM_PROFILES[name]
+    return EffectProfile(
+        name=name,
+        match_boost=float(raw["match_boost"]),
+        near_match=float(raw["near_match"]),
+        mismatch_penalty=float(raw["mismatch_penalty"]),
+        bandit_warm_start=bool(raw["bandit_warm_start"]),
+    )
 
 
 @dataclass
@@ -48,6 +68,7 @@ class SimResult:
     mean_reward: list[float]
     final_mastery: list[float]
     choice_match_rate: list[float]
+    profile: str = "demo"
 
 
 def oracle_method(mastery: float, preference_noise: dict[int, int]) -> int:
@@ -57,14 +78,12 @@ def oracle_method(mastery: float, preference_noise: dict[int, int]) -> int:
 
 def make_students(n: int, params: BKTParams, rng: np.random.Generator) -> list[Student]:
     students: list[Student] = []
-    # Near-optimal alternatives per bin (individual variation).
     alts = {
-        0: (0, 2),  # worked or visual for novices
-        1: (2, 3),  # visual or story for intermediate
-        2: (1,),    # problem-first for advanced
+        0: (0, 2),
+        1: (2, 3),
+        2: (1,),
     }
     for i in range(n):
-        # Mix of novices and intermediates so fixed scaffolding eventually hurts.
         prior = float(np.clip(rng.beta(2.2, 3.2), 0.08, 0.62))
         pref = {b: int(rng.choice(opts)) for b, opts in alts.items()}
         students.append(
@@ -79,25 +98,28 @@ def make_students(n: int, params: BKTParams, rng: np.random.Generator) -> list[S
     return students
 
 
-def _effective_learn_rate(base_pt: float, method: int, best: int) -> float:
+def _effective_learn_rate(
+    base_pt: float,
+    method: int,
+    best: int,
+    effect: EffectProfile,
+) -> float:
     base = float(np.clip(base_pt * 0.50, 0.02, 0.22))
     if method == best:
-        return float(np.clip(base * MATCH_BOOST, 0.02, 0.80))
+        return float(np.clip(base * effect.match_boost, 0.02, 0.80))
     family = {
         0: {0, 2},
         1: {1},
         2: {0, 2, 3},
         3: {2, 3},
     }
-    # Expertise reversal: scaffolding methods actively slow advanced learners.
     if best == 1 and method in (0, 2, 3):
-        return float(np.clip(base * 0.18, 0.005, 0.80))
-    # Problem-first frustrates novices.
+        return float(np.clip(base * min(0.55, effect.mismatch_penalty), 0.005, 0.80))
     if best in (0, 2) and method == 1:
-        return float(np.clip(base * 0.22, 0.005, 0.80))
+        return float(np.clip(base * min(0.55, effect.mismatch_penalty), 0.005, 0.80))
     if method in family.get(best, set()):
-        return float(np.clip(base * NEAR_MATCH, 0.02, 0.80))
-    return float(np.clip(base * MISMATCH_PENALTY, 0.01, 0.80))
+        return float(np.clip(base * effect.near_match, 0.02, 0.80))
+    return float(np.clip(base * effect.mismatch_penalty, 0.01, 0.80))
 
 
 def _answer(student: Student, p_g: float, p_s: float, rng: np.random.Generator) -> bool:
@@ -118,6 +140,7 @@ def run_one_student(
     bandit: DiscountedContextualTS | None,
     fixed_method: int,
     rng: np.random.Generator,
+    effect: EffectProfile,
     max_sessions: int = MAX_SESSIONS,
 ) -> tuple[float, bool, float, float]:
     rewards: list[float] = []
@@ -144,7 +167,7 @@ def run_one_student(
         decisions += 1
         matches += int(method == best_now)
 
-        p_t_eff = _effective_learn_rate(params.p_t, method, best_now)
+        p_t_eff = _effective_learn_rate(params.p_t, method, best_now, effect)
 
         for _ in range(PRACTICE_ITEMS):
             _learn_step(student, p_t_eff, rng)
@@ -203,7 +226,6 @@ def _policy_prefers_oracle(
         return int(np.argmax(bandit.mean_rewards(context))) == best
     if policy_name == "fixed":
         return fixed_method == best
-    # Random has no preference; treat as miss for this metric.
     return False
 
 
@@ -212,6 +234,7 @@ def run_policy(
     base_students: list[Student],
     params: BKTParams,
     rng: np.random.Generator,
+    effect: EffectProfile,
     fixed_method: int = 0,
 ) -> SimResult:
     sessions: list[float] = []
@@ -221,7 +244,10 @@ def run_policy(
     match_rates: list[float] = []
 
     bandit = (
-        DiscountedContextualTS(rng=np.random.default_rng(int(rng.integers(1, 1_000_000))))
+        DiscountedContextualTS(
+            rng=np.random.default_rng(int(rng.integers(1, 1_000_000))),
+            warm_start=effect.bandit_warm_start,
+        )
         if policy_name == "bandit"
         else None
     )
@@ -235,7 +261,7 @@ def run_policy(
             preference_noise=dict(proto.preference_noise),
         )
         s, rec, mean_r, match_rate = run_one_student(
-            student, params, policy_name, bandit, fixed_method, rng
+            student, params, policy_name, bandit, fixed_method, rng, effect
         )
         sessions.append(s)
         recovered.append(rec)
@@ -250,6 +276,7 @@ def run_policy(
         mean_reward=means,
         final_mastery=finals,
         choice_match_rate=match_rates,
+        profile=effect.name,
     )
 
 
@@ -257,11 +284,15 @@ def run_comparison(
     params: BKTParams,
     n_students: int = N_STUDENTS,
     seed: int = 42,
+    profile: str = "demo",
 ) -> dict[str, SimResult]:
+    effect = get_effect_profile(profile)
     rng = np.random.default_rng(seed)
     base = make_students(n_students, params, rng)
     results = {}
+    # Deterministic seeds (avoid process-dependent hash()).
+    seed_offsets = {"fixed": 101, "random": 202, "bandit": 303}
     for name in ("fixed", "random", "bandit"):
-        policy_rng = np.random.default_rng(seed + (hash(name) % 10_000))
-        results[name] = run_policy(name, base, params, policy_rng)
+        policy_rng = np.random.default_rng(seed + seed_offsets[name])
+        results[name] = run_policy(name, base, params, policy_rng, effect)
     return results

@@ -1,4 +1,4 @@
-"""Shared constants for the Phase 1 demo."""
+"""Shared constants for simulation and offline evaluation."""
 
 from __future__ import annotations
 
@@ -44,14 +44,42 @@ METHOD_PRIOR_BY_BIN = {
     "advanced": (1,),       # problem first
 }
 
-# Demo-scaled method effect (ASSISTments RCTs often show smaller effects;
-# we amplify so the pitch chart separates cleanly in ~100 simulated kids).
-MATCH_BOOST = 3.0
-NEAR_MATCH = 0.90
-MISMATCH_PENALTY = 0.28
+# --- Simulation effect profiles ---
+# `demo`: amplified for pitch charts (NOT efficacy evidence).
+# `neutral`: modest ATI-sized effects closer to literature.
+# `adversarial`: tiny / noisy effects — bandit should not look magical.
+SIM_PROFILES: dict[str, dict[str, float | bool]] = {
+    "demo": {
+        "match_boost": 3.0,
+        "near_match": 0.90,
+        "mismatch_penalty": 0.28,
+        "bandit_warm_start": True,
+        "description": "Pitch-scaled effects; circular-friendly. Not for claims.",
+    },
+    "neutral": {
+        "match_boost": 1.45,
+        "near_match": 0.95,
+        "mismatch_penalty": 0.70,
+        "bandit_warm_start": False,
+        "description": "Modest method effects; flat bandit priors.",
+    },
+    "adversarial": {
+        "match_boost": 1.10,
+        "near_match": 0.98,
+        "mismatch_penalty": 0.90,
+        "bandit_warm_start": False,
+        "description": "Weak effects; stress-test that bandit does not overclaim.",
+    },
+}
+
+# Back-compat aliases used by older demo code (demo profile).
+MATCH_BOOST = float(SIM_PROFILES["demo"]["match_boost"])
+NEAR_MATCH = float(SIM_PROFILES["demo"]["near_match"])
+MISMATCH_PENALTY = float(SIM_PROFILES["demo"]["mismatch_penalty"])
 
 # Contextual Thompson Sampling hyperparameters.
 BANDIT_GAMMA = 0.88  # discount so older evidence fades
 
 DATA_PATH = "data/as.csv"
 OUTPUT_DIR = "outputs"
+CONTENT_VERSION = 2

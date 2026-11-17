@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any
 from urllib import error, request
 
+from pll.lesson_integrity import validate_lesson
 from pll.ollama_client import OllamaError, chat_json, is_reachable
 from pll.prompts import SKILL_LABELS, build_prompt
 from pll.questions import Question, QuestionBank, SKILL_ALIASES
-from pll.sympy_check import verify_answer
 
 
 @dataclass
@@ -28,6 +28,9 @@ class Lesson:
     source: str  # "template" | "ollama" | "llm" | "template_fallback"
     prompt: str
     model_name: str = ""
+    answers_ok: bool = True
+    lesson_ok: bool = True
+    integrity_issues: list[str] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -133,31 +136,10 @@ def _template_lesson(
     }
 
 
-def _verify_lesson_dict(lesson: dict[str, Any]) -> tuple[dict[str, Any], bool]:
-    """Attach verification flags; return (lesson, all_ok)."""
-    all_ok = True
-
-    def check_field(obj: dict[str, Any], key: str = "answer") -> None:
-        nonlocal all_ok
-        if key not in obj:
-            return
-        # Important: answer_sympy may be present but None for text-only items.
-        expected = obj[key] if obj.get("answer_sympy") is None else obj["answer_sympy"]
-        got = obj["model_answer"] if obj.get("model_answer") is not None else obj.get(key)
-        result = verify_answer(expected, got)
-        obj["verified"] = result.ok
-        obj["verify_detail"] = result.detail
-        all_ok = all_ok and result.ok
-
-    for section in ("worked_example", "challenge", "reveal", "maths_in_story", "exit_ticket"):
-        if isinstance(lesson.get(section), dict):
-            check_field(lesson[section])
-
-    for item in lesson.get("practice", []):
-        check_field(item)
-
-    lesson["all_verified"] = all_ok
-    return lesson, all_ok
+def _verify_lesson_dict(lesson: dict[str, Any], method: str | None = None) -> tuple[dict[str, Any], bool]:
+    """Attach answer + prose integrity flags; return (lesson, all_ok)."""
+    report = validate_lesson(lesson, method=method or lesson.get("method"))
+    return lesson, report.ok
 
 
 def _call_openai_compatible(prompt: str, model: str, base_url: str, api_key: str) -> dict[str, Any]:
@@ -283,7 +265,7 @@ def generate_lesson(
     else:
         body = _template_lesson(method, skill, misconception_id, label, example, practice)
 
-    body, all_ok = _verify_lesson_dict(body)
+    body, all_ok = _verify_lesson_dict(body, method=method)
     return Lesson(
         method=method,
         skill=skill,
@@ -296,6 +278,9 @@ def generate_lesson(
         source=source,
         prompt=prompt,
         model_name=model_name,
+        answers_ok=bool(body.get("answers_ok", all_ok)),
+        lesson_ok=bool(body.get("lesson_ok", all_ok)),
+        integrity_issues=list(body.get("integrity_issues") or []),
     )
 
 
@@ -317,9 +302,15 @@ def render_lesson_markdown(lesson: Lesson) -> str:
         f"**Misconception targeted:** {lesson.misconception_label}  ",
         f"**Source:** {lesson.source}  ",
         f"**Model:** {lesson.model_name or 'n/a'}  ",
-        f"**All answers SymPy-verified:** {'yes' if lesson.all_verified else 'NO'}  ",
+        f"**Answers verified:** {'yes' if lesson.answers_ok else 'NO'}  ",
+        f"**Lesson integrity:** {'yes' if lesson.lesson_ok else 'NO'}  ",
+        f"**Fully verified:** {'yes' if lesson.all_verified else 'NO'}  ",
         "",
     ]
+    if lesson.integrity_issues:
+        lines += ["**Integrity issues:**"]
+        lines += [f"- {x}" for x in lesson.integrity_issues]
+        lines.append("")
     if "hook" in b:
         lines += ["## Hook", b["hook"], ""]
     if "story" in b:

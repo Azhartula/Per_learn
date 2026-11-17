@@ -33,10 +33,13 @@ class Question:
     answer_sympy: Any
     explanation: str
     choices: tuple[str, ...] | None = None
+    form: str = "A"
+    distractor_misconceptions: dict[str, str] | None = None
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Question:
         choices = d.get("choices")
+        dmap = d.get("distractor_misconceptions") or {}
         return cls(
             id=d["id"],
             skill=d["skill"],
@@ -48,6 +51,8 @@ class Question:
             answer_sympy=d.get("answer_sympy"),
             explanation=d.get("explanation", ""),
             choices=tuple(choices) if choices else None,
+            form=str(d.get("form") or "A"),
+            distractor_misconceptions=dict(dmap) if dmap else None,
         )
 
 
@@ -75,8 +80,26 @@ class QuestionBank:
         skill = SKILL_ALIASES.get(skill, skill)
         return [q for q in self.items if q.skill == skill]
 
+    def by_form(self, form: str, skill: str | None = None) -> list[Question]:
+        form = form.upper()
+        items = self.items if skill is None else self.by_skill(skill)
+        return [q for q in items if q.form.upper() == form]
+
     def by_misconception(self, misconception_id: str) -> list[Question]:
         return [q for q in self.items if misconception_id in q.misconceptions]
+
+    def misconception_from_response(self, question: Question, response: Any) -> list[str]:
+        """Map a selected distractor to misconception ids (not 'any wrong ⇒ all tags')."""
+        if question.distractor_misconceptions:
+            key = str(response).strip()
+            mid = question.distractor_misconceptions.get(key)
+            if mid:
+                return [mid]
+            # try normalized match
+            for choice, mid in question.distractor_misconceptions.items():
+                if str(choice).strip().lower() == key.lower():
+                    return [mid]
+        return []
 
     def get(self, item_id: str) -> Question:
         for q in self.items:

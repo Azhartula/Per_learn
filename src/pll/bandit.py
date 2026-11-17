@@ -40,6 +40,7 @@ class DiscountedContextualTS:
         prior_b: float = 1.0,
         gamma: float = BANDIT_GAMMA,
         rng: np.random.Generator | None = None,
+        warm_start: bool = True,
     ) -> None:
         self.n_arms = n_arms
         self.n_bins = n_bins
@@ -47,21 +48,23 @@ class DiscountedContextualTS:
         self.prior_b = prior_b
         self.gamma = gamma
         self.rng = rng or np.random.default_rng()
+        self.warm_start = warm_start
         # alpha[bin, arm], beta[bin, arm]
         self.alpha = np.full((n_bins, n_arms), prior_a, dtype=float)
         self.beta = np.full((n_bins, n_arms), prior_b, dtype=float)
         self.counts = np.zeros((n_bins, n_arms), dtype=int)
-        # Weak expertise-reversal warm start (still learned from delayed rewards).
+        # Optional expertise-reversal warm start (disable for non-circular eval).
         # bins: 0=novice, 1=intermediate, 2=advanced
         # arms: 0=worked, 1=problem_first, 2=visual, 3=story
-        warm = {
-            0: {0: 2.5, 2: 1.5, 1: -0.3},
-            1: {2: 2.0, 3: 1.5, 1: -0.2},
-            2: {1: 3.0, 0: -0.4, 2: -0.3},
-        }
-        for b, arms in warm.items():
-            for a, bump in arms.items():
-                self.alpha[b, a] = max(0.5, self.alpha[b, a] + bump)
+        if warm_start:
+            warm = {
+                0: {0: 2.5, 2: 1.5, 1: -0.3},
+                1: {2: 2.0, 3: 1.5, 1: -0.2},
+                2: {1: 3.0, 0: -0.4, 2: -0.3},
+            }
+            for b, arms in warm.items():
+                for a, bump in arms.items():
+                    self.alpha[b, a] = max(0.5, self.alpha[b, a] + bump)
 
     def select(self, context: np.ndarray) -> int:
         b = int(np.argmax(context[: self.n_bins]))

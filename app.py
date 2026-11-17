@@ -1,7 +1,8 @@
-"""PerLearn Streamlit demo — clear pitch + guided MCQ learning session."""
+"""PerLearn — company pitch deck + guided live demo."""
 
 from __future__ import annotations
 
+import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,12 +14,9 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from pll.bandit import make_context, mastery_bin  # noqa: E402
-from pll.config import METHODS  # noqa: E402
-from pll.learner import (  # noqa: E402
-    SessionRecord,
-    load_or_create,
-    save_profile,
-)
+from pll.config import CONTENT_VERSION, METHODS  # noqa: E402
+from pll.events import append_event, log_item_response, new_session_id  # noqa: E402
+from pll.learner import SessionRecord, load_or_create, save_profile  # noqa: E402
 from pll.lessons import generate_lesson, render_lesson_markdown  # noqa: E402
 from pll.mcq import McqQuestion, as_mcq  # noqa: E402
 from pll.ollama_client import is_reachable  # noqa: E402
@@ -29,45 +27,81 @@ from pll.sympy_check import verify_answer  # noqa: E402
 
 BIN_NAMES = ("just starting", "building up", "getting strong")
 STEPS = [
-    ("quiz", "1. Find the gap"),
-    ("bridge", "2. Choose how to teach"),
-    ("lesson", "3. Learn"),
-    ("practice", "4. Practice"),
-    ("check", "5. Check it stuck"),
-    ("done", "6. See what changed"),
+    ("quiz", "Gap"),
+    ("bridge", "Style"),
+    ("lesson", "Teach"),
+    ("practice", "Practice"),
+    ("check", "Check"),
+    ("done", "Adapt"),
+]
+PITCH_SLIDES = [
+    "hook",
+    "problem",
+    "insight",
+    "loop",
+    "evidence",
+    "who",
+    "ask",
 ]
 
 
-st.set_page_config(page_title="PerLearn", page_icon="📗", layout="centered")
+st.set_page_config(
+    page_title="PerLearn — Pitch + Demo",
+    page_icon="📗",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 
 st.markdown(
     """
     <style>
-      .block-container { max-width: 760px; padding-top: 1.2rem; padding-bottom: 3rem; }
+      .block-container { max-width: 820px; padding-top: 1rem; padding-bottom: 3rem; }
       h1, h2, h3 { font-family: Georgia, "Iowan Old Style", serif; letter-spacing: -0.02em; }
-      .idea-box {
-        background: linear-gradient(135deg, #eef6f1, #f7f4ee);
-        border: 1px solid #d5e4db;
+      .card {
+        background: #f3f7f4 !important;
+        color: #14241c !important;
+        border: 1px solid #c9ddd2;
         border-radius: 16px;
-        padding: 1.1rem 1.25rem;
-        margin: 0.8rem 0 1.2rem;
+        padding: 1.15rem 1.3rem;
+        margin: 0.75rem 0 1rem;
+        line-height: 1.55;
       }
-      .step-chip {
+      .card strong, .card em, .card span { color: #0f1c16 !important; }
+      .chip {
         display: inline-block;
-        background: #e7f0ea;
-        color: #1b4d3a;
+        background: #1b7a5a;
+        color: #ffffff !important;
         border-radius: 999px;
-        padding: 0.25rem 0.7rem;
-        font-size: 0.85rem;
+        padding: 0.28rem 0.75rem;
+        font-size: 0.8rem;
         font-weight: 700;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
+        letter-spacing: 0.02em;
       }
-      .why-box {
+      .quote {
         border-left: 4px solid #1b7a5a;
-        padding: 0.35rem 0 0.35rem 0.9rem;
-        margin: 0.8rem 0 1rem;
-        color: #24352c;
+        padding: 0.2rem 0 0.2rem 0.9rem;
+        margin: 0.7rem 0 1rem;
+        color: #24352c !important;
+        font-size: 1.05rem;
       }
+      .big-number {
+        font-family: Georgia, serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #1b7a5a !important;
+        line-height: 1.1;
+        margin: 0.2rem 0;
+      }
+      .vs-bad {
+        background: #f7ebe6 !important;
+        border-color: #e2c4b6 !important;
+      }
+      .vs-good {
+        background: #e8f4ee !important;
+        border-color: #b7d8c6 !important;
+      }
+      div[data-testid="stMetricValue"] { font-size: 1.35rem; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -76,8 +110,10 @@ st.markdown(
 
 def _init_state() -> None:
     defaults = {
+        "mode": "landing",  # landing | pitch | demo
+        "pitch_i": 0,
         "phase": "home",
-        "name": "Azhar",
+        "name": "Guest",
         "profile": None,
         "bank": None,
         "diag_index": 0,
@@ -92,11 +128,12 @@ def _init_state() -> None:
         "delayed_items": [],
         "delayed_index": 0,
         "delayed_correct": 0,
-        "use_ollama": False,  # default off so demos stay fast/clear
+        "use_ollama": False,
         "model": "qwen2.5:7b",
-        "n_diag": 4,
+        "n_diag": 3,
         "mastery_before": 0.28,
         "fast_demo": True,
+        "event_session_id": None,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -116,6 +153,34 @@ def _short_method(method: str) -> str:
         "visual": "Visual (bars / number line)",
         "story_analogy": "Real-world story",
     }.get(method, METHOD_PLAIN.get(method, method))
+
+
+def _phase1() -> dict:
+    path = ROOT / "outputs" / "phase1_metrics.json"
+    if path.exists():
+        return json.loads(path.read_text())
+    return {}
+
+
+def _card(html: str, kind: str = "") -> None:
+    cls = f"card {kind}".strip()
+    st.markdown(f'<div class="{cls}">{html}</div>', unsafe_allow_html=True)
+
+
+def _chip(text: str) -> None:
+    st.markdown(f'<div class="chip">{text}</div>', unsafe_allow_html=True)
+
+
+def _nav_row(back_label: str, next_label: str, on_back, on_next) -> None:
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button(back_label, use_container_width=True):
+            on_back()
+            st.rerun()
+    with c2:
+        if st.button(next_label, type="primary", use_container_width=True):
+            on_next()
+            st.rerun()
 
 
 def _stepper() -> None:
@@ -161,47 +226,62 @@ def _render_mcq(q: McqQuestion) -> str | None:
 
 def _sidebar() -> None:
     st.sidebar.markdown("## PerLearn")
-    st.sidebar.caption("Demo for Year 5 fractions")
-    st.session_state.name = st.sidebar.text_input("Your name", value=st.session_state.name).strip() or "Learner"
+    st.sidebar.caption("Company pitch + live demo")
 
+    mode = st.session_state.mode
+    if st.sidebar.button("🏠 Landing", use_container_width=True, disabled=mode == "landing"):
+        st.session_state.mode = "landing"
+        st.rerun()
+    if st.sidebar.button("🎯 Company pitch", use_container_width=True, disabled=mode == "pitch"):
+        st.session_state.mode = "pitch"
+        st.session_state.pitch_i = 0
+        st.rerun()
+    if st.sidebar.button("🧪 Live 5-min try", use_container_width=True, disabled=mode == "demo"):
+        st.session_state.mode = "demo"
+        st.session_state.phase = "home"
+        st.rerun()
+
+    st.sidebar.markdown("---")
+    st.session_state.name = (
+        st.sidebar.text_input("Demo learner name", value=st.session_state.name).strip() or "Guest"
+    )
     profile = st.session_state.profile
     if profile is None or profile.name != st.session_state.name:
         st.session_state.profile = load_or_create(st.session_state.name)
         profile = st.session_state.profile
 
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### Your progress")
-    st.sidebar.metric("Confidence so far", f"{profile.mastery:.0%}")
-    st.sidebar.metric("Sessions done", profile.sessions_completed)
-    st.sidebar.write(f"Level: **{BIN_NAMES[mastery_bin(profile.mastery)]}**")
-    st.sidebar.write(f"Best teaching style right now:\n\n**{_short_method(profile.preferred_method())}**")
+    st.sidebar.markdown("### Learner snapshot")
+    st.sidebar.metric("Confidence", f"{profile.mastery:.0%}")
+    st.sidebar.metric("Sessions", profile.sessions_completed)
+    st.sidebar.write(f"Best style now:\n\n**{_short_method(profile.preferred_method())}**")
 
-    with st.sidebar.expander("Advanced settings", expanded=False):
+    with st.sidebar.expander("Advanced", expanded=False):
         st.session_state.fast_demo = st.toggle(
-            "Fast demo (shorter quiz, template lesson)",
+            "Fast demo (template lesson)",
             value=st.session_state.fast_demo,
-            help="Turn off if you want the local AI model to write the lesson.",
         )
         st.session_state.use_ollama = st.toggle(
-            "Use local AI lesson (Ollama / Qwen)",
+            "Local AI lesson (Ollama)",
             value=st.session_state.use_ollama and not st.session_state.fast_demo,
         )
         if st.session_state.use_ollama:
             st.session_state.fast_demo = False
         st.session_state.model = st.text_input("Ollama model", value=st.session_state.model)
-        st.session_state.n_diag = 3 if st.session_state.fast_demo else st.slider(
-            "Quiz length", 3, 6, st.session_state.n_diag
+        st.session_state.n_diag = (
+            3 if st.session_state.fast_demo else st.slider("Quiz length", 3, 6, st.session_state.n_diag)
         )
         if st.session_state.use_ollama and not is_reachable():
-            st.warning("Ollama not running. Start it or use Fast demo.")
+            st.warning("Ollama not running.")
 
-    if st.sidebar.button("Restart demo flow"):
+    if st.sidebar.button("Reset learner profile"):
         keep = {
             "name": st.session_state.name,
             "use_ollama": st.session_state.use_ollama,
             "model": st.session_state.model,
             "n_diag": st.session_state.n_diag,
             "fast_demo": st.session_state.fast_demo,
+            "mode": st.session_state.mode,
+            "pitch_i": st.session_state.pitch_i,
         }
         for k in list(st.session_state.keys()):
             del st.session_state[k]
@@ -212,51 +292,277 @@ def _sidebar() -> None:
         st.rerun()
 
 
-def phase_home() -> None:
+# ── Landing ──────────────────────────────────────────────────────────────────
+
+
+def page_landing() -> None:
+    _chip("Pitch-ready demo")
     st.title("PerLearn")
-    st.subheader("Most apps pick *what* to learn next. We figure out *how* to teach this child.")
+    st.subheader("Most edtech adapts *what* to learn. We adapt *how* to teach.")
 
-    st.markdown(
-        """
-        <div class="idea-box">
-          <strong>The idea in one line</strong><br/>
-          Watch how a learner answers → try a teaching style → check if it really stuck →
-          keep the styles that work for <em>this</em> child (and change as they grow).
-        </div>
-        """,
-        unsafe_allow_html=True,
+    _card(
+        "<strong>One sentence for the room</strong><br/>"
+        "We measure which teaching style actually sticks for this learner — "
+        "then we change it as they get stronger. Not a learning-styles quiz. Not a fixed path."
     )
 
-    st.markdown("### In this 5-minute demo you will:")
-    st.markdown(
-        """
-1. **Answer a few MCQs** — we find a weak spot  
-2. **Get a lesson** in a teaching style chosen for you  
-3. **Practice**, then take a short **no-help check**  
-4. **See how the system updates** what works for you  
-        """
-    )
-
-    st.markdown("### Four teaching styles we can switch between")
+    st.markdown("### How do you want to run this meeting?")
     c1, c2 = st.columns(2)
     with c1:
-        st.info("**Worked example first**\n\nShow steps, then practice.")
-        st.info("**Visual**\n\nFraction bars / number lines.")
+        _card(
+            "<strong>🎯 Company pitch</strong><br/>"
+            "7 slides · problem → proof → partnership ask<br/>"
+            "<span style='opacity:0.8'>Best when you’re presenting to a table.</span>"
+        )
+        if st.button("Start company pitch →", type="primary", use_container_width=True):
+            st.session_state.mode = "pitch"
+            st.session_state.pitch_i = 0
+            st.rerun()
     with c2:
-        st.info("**Problem first**\n\nTry it, then explain.")
-        st.info("**Story**\n\nPizza, recipes, real life.")
+        _card(
+            "<strong>🧪 Live 5-minute try</strong><br/>"
+            "They take a short quiz → get a lesson → see adaptation<br/>"
+            "<span style='opacity:0.8'>Best when you want them to feel it.</span>"
+        )
+        if st.button("Start live demo →", use_container_width=True):
+            st.session_state.mode = "demo"
+            st.session_state.phase = "home"
+            st.rerun()
+
+    st.caption("Tip: open Company pitch first, then jump to Live try from the last slide.")
+
+
+# ── Company pitch slides ─────────────────────────────────────────────────────
+
+
+def page_pitch() -> None:
+    i = st.session_state.pitch_i
+    n = len(PITCH_SLIDES)
+    st.progress((i + 1) / n, text=f"Pitch slide {i + 1} of {n}")
+    slide = PITCH_SLIDES[i]
+    {
+        "hook": _pitch_hook,
+        "problem": _pitch_problem,
+        "insight": _pitch_insight,
+        "loop": _pitch_loop,
+        "evidence": _pitch_evidence,
+        "who": _pitch_who,
+        "ask": _pitch_ask,
+    }[slide]()
+
+    def go_back():
+        if i == 0:
+            st.session_state.mode = "landing"
+        else:
+            st.session_state.pitch_i = i - 1
+
+    def go_next():
+        if i >= n - 1:
+            st.session_state.mode = "demo"
+            st.session_state.phase = "home"
+        else:
+            st.session_state.pitch_i = i + 1
+
+    next_label = "Try the live demo →" if i >= n - 1 else "Next →"
+    _nav_row("← Back", next_label, go_back, go_next)
+
+
+def _pitch_hook() -> None:
+    _chip("Slide 1 · Hook")
+    st.header("Two kids. Same app. Same wrong answers.")
+    st.markdown(
+        '<p class="quote">One needs a worked example. The other needs to struggle first. '
+        "Your product teaches both the same way.</p>",
+        unsafe_allow_html=True,
+    )
+    _card(
+        "Adaptive learning today is great at picking the <strong>next topic</strong>.<br/>"
+        "It almost never picks the <strong>teaching method</strong> — and never re-checks whether "
+        "that method still works as the child grows."
+    )
+    st.info("That’s the gap PerLearn fills. A method layer on top of any content engine.")
+
+
+def _pitch_problem() -> None:
+    _chip("Slide 2 · The market problem")
+    st.header("Why “personalised” still feels generic")
+
+    a, b = st.columns(2)
+    with a:
+        _card(
+            "<strong>What buyers are sold</strong><br/>"
+            "• Adaptive difficulty<br/>"
+            "• Next-item recommenders<br/>"
+            "• Learning-style quizzes<br/>"
+            "• More content, same pedagogy",
+            "vs-bad",
+        )
+    with b:
+        _card(
+            "<strong>What classrooms still feel</strong><br/>"
+            "• Kids plateau on the same concept<br/>"
+            "• Tutors guess the explanation style<br/>"
+            "• Practice scores look fine — tests don’t<br/>"
+            "• One path for beginners and near-masters",
+            "vs-bad",
+        )
+
+    st.warning(
+        "Learning-styles labels are a neuromyth. We don’t ask “are you visual?” — "
+        "we measure what produces delayed mastery."
+    )
+
+
+def _pitch_insight() -> None:
+    _chip("Slide 3 · The insight")
+    st.header("Don’t label how they learn. Measure what sticks.")
+    st.markdown(
+        '<p class="quote">Reward = can they do it <strong>later, without help</strong>? '
+        "Not “did practice go well while scaffolding was on.”</p>",
+        unsafe_allow_html=True,
+    )
+    _card(
+        "<strong>Expertise reversal (research-backed)</strong><br/>"
+        "Beginners often need worked examples. As mastery rises, problem-first and less guidance "
+        "win. The best method <em>changes</em> — so the system must keep measuring."
+    )
+    c1, c2, c3, c4 = st.columns(4)
+    c1.success("Worked example")
+    c2.success("Problem first")
+    c3.success("Visual")
+    c4.success("Story / analogy")
+
+
+def _pitch_loop() -> None:
+    _chip("Slide 4 · The product")
+    st.header("One continuous loop")
+    steps = [
+        ("1. Find the gap", "Short adaptive quiz → weak skill + likely mix-up"),
+        ("2. Choose how to teach", "Policy picks a style for this learner’s level"),
+        ("3. Teach + practice", "Lesson matched to that style (math answers verified)"),
+        ("4. No-help check", "Unassisted score updates which styles work"),
+        ("5. Adapt", "Next session can switch method as they grow"),
+    ]
+    for title, body in steps:
+        _card(f"<strong>{title}</strong><br/>{body}")
+
+
+def _pitch_evidence() -> None:
+    _chip("Slide 5 · Evidence")
+    st.header("It finds better methods faster")
+    m = _phase1()
+    policies = m.get("policies", {})
+    bandit = policies.get("bandit", {})
+    fixed = policies.get("fixed", {})
+    random = policies.get("random", {})
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown(
+            f'<p class="big-number">{bandit.get("mean_sessions", 5.3):.1f}</p>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Bandit · mean sessions to mastery")
+    with c2:
+        st.markdown(
+            f'<p class="big-number">{fixed.get("mean_sessions", 6.0):.1f}</p>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Fixed method · mean sessions")
+    with c3:
+        st.markdown(
+            f'<p class="big-number">{random.get("mean_sessions", 7.1):.1f}</p>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Random method · mean sessions")
+
+    _card(
+        f"Simulation on ASSISTments fraction parameters "
+        f"({m.get('n_students', 100)} learners). "
+        f"Bandit recovers the child’s true preferred method "
+        f"<strong>{bandit.get('end_preference_recovery', 0.56):.0%}</strong> of the time by the end — "
+        "fixed/random recovery ≈ 0%."
+    )
+
+    chart = ROOT / "outputs" / "phase1_time_to_mastery.png"
+    if chart.exists():
+        st.image(str(chart), caption="Time-to-mastery: bandit vs fixed vs random")
+    st.caption("Also available: multi-week child trajectories (Maya / Sam / Jordan) on the demo site.")
+
+
+def _pitch_who() -> None:
+    _chip("Slide 6 · Who this is for")
+    st.header("A method layer — not another content library")
+    a, b = st.columns(2)
+    with a:
+        _card(
+            "<strong>Perfect fit</strong><br/>"
+            "• Tutoring platforms<br/>"
+            "• Adaptive homework apps<br/>"
+            "• School LMS / practice engines<br/>"
+            "• AI tutors that only vary difficulty",
+            "vs-good",
+        )
+    with b:
+        _card(
+            "<strong>What you keep</strong><br/>"
+            "• Your curriculum & brand<br/>"
+            "• Your item bank<br/>"
+            "• Your UI<br/><br/>"
+            "<strong>What we add</strong><br/>"
+            "Which explanation style to use — and when to switch.",
+            "vs-good",
+        )
+    st.info("First vertical: Year 5 fractions (UK). Loop is subject-agnostic once you have items + methods.")
+
+
+def _pitch_ask() -> None:
+    _chip("Slide 7 · The ask")
+    st.header("What we’re looking for")
+    _card(
+        "<strong>Pilot partnership (90 days)</strong><br/>"
+        "1 skill area · your learners · we run the method loop · you keep the outcome data.<br/><br/>"
+        "<strong>Success looks like</strong><br/>"
+        "Faster delayed mastery vs your current fixed pedagogy — and a clear “style switched” story "
+        "teachers / parents can understand."
+    )
+    st.markdown("### In the room right now")
+    st.markdown(
+        """
+1. Walk the **live 5-minute try** (next button)  
+2. Show **before → after teaching style** on the final screen  
+3. Leave them with: *we don’t guess learning styles — we measure what sticks*  
+        """
+    )
+    st.success("Ready? Hit **Try the live demo →** and let them take the quiz themselves.")
+
+
+# ── Live demo ────────────────────────────────────────────────────────────────
+
+
+def phase_home() -> None:
+    _chip("Live demo · ~5 minutes")
+    st.header("Feel the loop")
+    st.markdown(
+        "You’ll answer a few questions. We’ll pick a teaching style, teach you, "
+        "then check if it stuck — and show how preference updates."
+    )
+    _card(
+        "<strong>What to watch for (tell the room)</strong><br/>"
+        "1. We find a <em>weak spot</em>, not just a score<br/>"
+        "2. We choose a <em>teaching style</em> on purpose<br/>"
+        "3. The final no-help check updates what we think works for <em>you</em>"
+    )
 
     profile = st.session_state.profile
     if profile.sessions_completed:
         st.success(
-            f"Welcome back, {profile.name}. "
-            f"After {profile.sessions_completed} session(s), your best style so far looks like: "
-            f"**{_short_method(profile.preferred_method())}**."
+            f"Welcome back, {profile.name}. Best style so far: "
+            f"**{_short_method(profile.preferred_method())}** "
+            f"({profile.sessions_completed} session(s))."
         )
-    else:
-        st.caption("First time here — we’ll learn your pattern as you answer.")
 
-    if st.button("Start the demo →", type="primary", use_container_width=True):
+    if st.button("Start my session →", type="primary", use_container_width=True):
         bank = _bank()
         st.session_state.phase = "diagnostic"
         st.session_state.diag_index = 0
@@ -269,9 +575,22 @@ def phase_home() -> None:
         st.session_state._current_mcq = None
         st.session_state.lesson = None
         st.session_state.diagnostic = None
+        sid = new_session_id()
+        st.session_state.event_session_id = sid
+        append_event(
+            sid,
+            "session_start",
+            learner_id=profile.name,
+            payload={"mode": "streamlit", "content_version": CONTENT_VERSION, "respondent": "human"},
+        )
         if st.session_state.fast_demo:
             st.session_state.n_diag = 3
             st.session_state.use_ollama = False
+        st.rerun()
+
+    if st.button("← Back to company pitch"):
+        st.session_state.mode = "pitch"
+        st.session_state.pitch_i = len(PITCH_SLIDES) - 1
         st.rerun()
 
 
@@ -289,11 +608,10 @@ def _next_diag_question() -> Question | None:
 
 
 def phase_diagnostic() -> None:
-    st.markdown('<div class="step-chip">Step 1 of 6 · Find the gap</div>', unsafe_allow_html=True)
+    _chip("Step 1 · Find the gap")
     st.header("Quick quiz")
     st.markdown(
-        '<div class="why-box">Why this step? We need to know <strong>where you’re stuck</strong> '
-        "before we choose how to teach.</div>",
+        '<p class="quote">We’re not grading you for a report card — we’re finding where you’re stuck.</p>',
         unsafe_allow_html=True,
     )
     i = st.session_state.diag_index
@@ -332,6 +650,19 @@ def phase_diagnostic() -> None:
                 misconceptions=q.misconceptions,
             )
         )
+        if st.session_state.event_session_id:
+            log_item_response(
+                st.session_state.event_session_id,
+                learner_id=st.session_state.profile.name,
+                item_id=q.id,
+                skill=q.skill,
+                method=None,
+                response=str(ans),
+                correct=ok,
+                outcome_type="diagnostic",
+                content_version=CONTENT_VERSION,
+                respondent="human",
+            )
         st.session_state.diag_index += 1
         st.session_state._current_mcq = None
         st.rerun()
@@ -377,12 +708,25 @@ def _finish_diagnostic() -> None:
     st.session_state.method_idx = method_idx
     st.session_state.method = METHODS[method_idx]
     st.session_state._bandit = bandit
+    if st.session_state.event_session_id:
+        append_event(
+            st.session_state.event_session_id,
+            "method_selected",
+            learner_id=profile.name,
+            payload={
+                "method": METHODS[method_idx],
+                "method_index": method_idx,
+                "context": context.tolist(),
+                "policy_probs": bandit.mean_rewards(context).tolist(),
+                "content_version": CONTENT_VERSION,
+            },
+        )
     st.session_state.phase = "bridge"
     st.rerun()
 
 
 def phase_bridge() -> None:
-    st.markdown('<div class="step-chip">Step 2 of 6 · Choose how to teach</div>', unsafe_allow_html=True)
+    _chip("Step 2 · Choose how to teach")
     st.header("Here’s what we noticed")
     d = st.session_state.diagnostic
     method = st.session_state.method
@@ -399,19 +743,14 @@ def phase_bridge() -> None:
     b.metric("Confidence", f"{profile.mastery:.0%}")
     c.metric("Level", BIN_NAMES[mastery_bin(profile.mastery)])
 
-    st.markdown(
-        f"""
-        <div class="idea-box">
-          <strong>Weak spot:</strong> {skill}<br/>
-          <strong>Likely mix-up:</strong> {why}<br/><br/>
-          <strong>So today we’ll teach with:</strong> {_short_method(method)}
-        </div>
-        """,
-        unsafe_allow_html=True,
+    _card(
+        f"<strong>Weak spot:</strong> {skill}<br/>"
+        f"<strong>Likely mix-up:</strong> {why}<br/><br/>"
+        f"<strong>So today we’ll teach with:</strong> {_short_method(method)}"
     )
     st.markdown(
-        '<div class="why-box">This is the core idea: we don’t only pick the next topic — '
-        "we pick the <strong>teaching style</strong> that should help <em>you</em> right now.</div>",
+        '<p class="quote">Say this out loud: we didn’t only pick the next topic — '
+        "we picked the <strong>teaching style</strong> for this learner right now.</p>",
         unsafe_allow_html=True,
     )
 
@@ -421,15 +760,14 @@ def phase_bridge() -> None:
 
 
 def phase_lesson() -> None:
-    st.markdown('<div class="step-chip">Step 3 of 6 · Learn</div>', unsafe_allow_html=True)
+    _chip("Step 3 · Teach")
     st.header("Your personalised lesson")
     diagnostic = st.session_state.diagnostic
     method = st.session_state.method
 
-    st.markdown(
-        f'<div class="why-box">Teaching style: <strong>{_short_method(method)}</strong> · '
-        f"Topic: <strong>{SKILL_LABELS.get(diagnostic.weakest_skill, diagnostic.weakest_skill)}</strong></div>",
-        unsafe_allow_html=True,
+    st.info(
+        f"Style: **{_short_method(method)}** · "
+        f"Topic: **{SKILL_LABELS.get(diagnostic.weakest_skill, diagnostic.weakest_skill)}**"
     )
 
     if st.session_state.lesson is None:
@@ -458,7 +796,6 @@ def phase_lesson() -> None:
 
     lesson = st.session_state.lesson
     with st.expander("Lesson", expanded=True):
-        # Strip noisy metadata lines for demos
         md = render_lesson_markdown(lesson)
         lines = [
             ln
@@ -479,12 +816,11 @@ def phase_lesson() -> None:
 
 
 def phase_practice() -> None:
-    st.markdown('<div class="step-chip">Step 4 of 6 · Practice</div>', unsafe_allow_html=True)
-    st.header("Practice questions")
+    _chip("Step 4 · Practice")
+    st.header("Practice with support")
     st.markdown(
-        '<div class="why-box">Practice helps you learn — but we <strong>don’t</strong> use practice '
-        "scores to decide your teaching style (that can reward easy help). "
-        "The next no-help check does.</div>",
+        '<p class="quote">Practice helps learning — but we <strong>don’t</strong> train the policy on practice scores. '
+        "That would reward easy help.</p>",
         unsafe_allow_html=True,
     )
     lesson = st.session_state.lesson
@@ -523,17 +859,29 @@ def phase_practice() -> None:
         ok = verify_answer(q.answer, ans).ok
         st.session_state.practice_total += 1
         st.session_state.practice_correct += int(ok)
+        if st.session_state.event_session_id:
+            log_item_response(
+                st.session_state.event_session_id,
+                learner_id=st.session_state.profile.name,
+                item_id=q.id,
+                skill=q.skill,
+                method=st.session_state.method,
+                response=str(ans),
+                correct=ok,
+                outcome_type="practice",
+                content_version=CONTENT_VERSION,
+                respondent="human",
+            )
         st.session_state.practice_index += 1
         st.session_state._current_practice_mcq = None
         st.rerun()
 
 
 def phase_delayed() -> None:
-    st.markdown('<div class="step-chip">Step 5 of 6 · Check it stuck</div>', unsafe_allow_html=True)
+    _chip("Step 5 · Check it stuck")
     st.header("No-help check")
     st.markdown(
-        '<div class="why-box">Answer without looking back. '
-        "This score tells us if today’s teaching style <strong>actually worked</strong>.</div>",
+        '<p class="quote">This score is the reward. Did today’s teaching style <strong>actually work</strong>?</p>',
         unsafe_allow_html=True,
     )
     items = st.session_state.delayed_items
@@ -548,6 +896,19 @@ def phase_delayed() -> None:
     if st.button("Lock in answer", type="primary", disabled=ans is None, use_container_width=True):
         ok = verify_answer(q.answer, ans).ok
         st.session_state.delayed_correct += int(ok)
+        if st.session_state.event_session_id:
+            log_item_response(
+                st.session_state.event_session_id,
+                learner_id=st.session_state.profile.name,
+                item_id=q.id,
+                skill=q.skill,
+                method=st.session_state.method,
+                response=str(ans),
+                correct=ok,
+                outcome_type="immediate_post",
+                content_version=CONTENT_VERSION,
+                respondent="human",
+            )
         st.session_state.delayed_index += 1
         st.rerun()
 
@@ -579,6 +940,18 @@ def _finish_session() -> None:
         )
     )
     path = save_profile(profile)
+    if st.session_state.event_session_id:
+        append_event(
+            st.session_state.event_session_id,
+            "session_end",
+            learner_id=profile.name,
+            payload={
+                "method": method,
+                "delayed_score": delayed_score,
+                "outcome_type": "immediate_post",
+                "content_version": CONTENT_VERSION,
+            },
+        )
     st.session_state.profile = profile
     st.session_state._save_path = str(path)
     st.session_state._last_delayed = delayed_score
@@ -587,8 +960,8 @@ def _finish_session() -> None:
 
 
 def phase_done() -> None:
-    st.markdown('<div class="step-chip">Step 6 of 6 · See what changed</div>', unsafe_allow_html=True)
-    st.header("This is the point of PerLearn")
+    _chip("Step 6 · Adaptation")
+    st.header("This is the product moment")
 
     profile = st.session_state.profile
     before = st.session_state.method_before_session or st.session_state.method
@@ -604,56 +977,54 @@ def phase_done() -> None:
         delta=f"{(profile.mastery - st.session_state.mastery_before)*100:.0f} pts",
     )
 
-    st.markdown(
-        f"""
-        <div class="idea-box">
-          <strong>What happened this session</strong><br/>
-          We taught with: <strong>{_short_method(used)}</strong><br/>
-          Your no-help score was <strong>{delayed:.0%}</strong>.
-          That result updates what we think works for you.
-        </div>
-        """,
-        unsafe_allow_html=True,
+    _card(
+        f"<strong>What just happened</strong><br/>"
+        f"Taught with: <strong>{_short_method(used)}</strong><br/>"
+        f"No-help score: <strong>{delayed:.0%}</strong> → updates the policy for this learner."
     )
 
     c1, c2 = st.columns(2)
     with c1:
-        st.info(f"**Before this session**\n\n{_short_method(before)}")
+        _card(f"<strong>Before this session</strong><br/>{_short_method(before)}", "vs-bad")
     with c2:
-        st.success(f"**Best guess for next time**\n\n{_short_method(after)}")
+        _card(f"<strong>Best guess next time</strong><br/>{_short_method(after)}", "vs-good")
 
     if before != after:
-        st.warning(
-            f"Adaptation happened: preference moved from **{_short_method(before)}** "
-            f"to **{_short_method(after)}** based on whether today’s lesson stuck."
+        st.success(
+            f"**Adaptation:** preference moved from {_short_method(before)} → {_short_method(after)}."
         )
     else:
         st.info(
-            f"Still leaning toward **{_short_method(after)}**. "
-            "Do another session — as you get stronger, the best style can change."
+            f"Still leaning **{_short_method(after)}**. Run another session — "
+            "as mastery rises, the winning style can flip (expertise reversal)."
         )
 
-    st.markdown("### Method fit scores (for your current level)")
+    st.markdown("### Method fit at this level")
     for method, score in sorted(profile.method_scores().items(), key=lambda x: -x[1]):
         st.progress(min(max(score, 0.0), 1.0), text=f"{_short_method(method)} — {score:.2f}")
 
-    st.caption("Run more sessions to see the teaching style shift as mastery grows.")
+    st.markdown(
+        '<p class="quote"><strong>Line for the room:</strong> “We don’t sell a learning-style label. '
+        "We sell a loop that keeps finding the method that sticks.”</p>",
+        unsafe_allow_html=True,
+    )
 
-    if st.button("Do another session", type="primary", use_container_width=True):
-        st.session_state.phase = "home"
-        st.session_state.lesson = None
-        st.session_state.diagnostic = None
-        st.rerun()
+    x, y = st.columns(2)
+    with x:
+        if st.button("Do another session", type="primary", use_container_width=True):
+            st.session_state.phase = "home"
+            st.session_state.lesson = None
+            st.session_state.diagnostic = None
+            st.rerun()
+    with y:
+        if st.button("Back to pitch ask", use_container_width=True):
+            st.session_state.mode = "pitch"
+            st.session_state.pitch_i = len(PITCH_SLIDES) - 1
+            st.rerun()
 
 
-def main() -> None:
-    _init_state()
-    if st.session_state.profile is None:
-        st.session_state.profile = load_or_create(st.session_state.name)
-    _sidebar()
+def page_demo() -> None:
     _stepper()
-
-    phase = st.session_state.phase
     {
         "home": phase_home,
         "diagnostic": phase_diagnostic,
@@ -662,7 +1033,22 @@ def main() -> None:
         "practice": phase_practice,
         "delayed": phase_delayed,
         "done": phase_done,
-    }.get(phase, phase_home)()
+    }.get(st.session_state.phase, phase_home)()
+
+
+def main() -> None:
+    _init_state()
+    if st.session_state.profile is None:
+        st.session_state.profile = load_or_create(st.session_state.name)
+    _sidebar()
+
+    mode = st.session_state.mode
+    if mode == "pitch":
+        page_pitch()
+    elif mode == "demo":
+        page_demo()
+    else:
+        page_landing()
 
 
 if __name__ == "__main__":
