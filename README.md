@@ -72,15 +72,18 @@ Outputs in `outputs/sessions/`.
 
 ## Phase 4 — shareable demo site
 
+The headline demo is a **multi-week child simulation**: Maya / Sam / Jordan learn over 10 weeks while the bandit switches teaching methods as mastery grows.
+
 ```bash
-PYTHONPATH=src python scripts/build_demo_site.py --refresh-session
+PYTHONPATH=src python scripts/run_child_demo.py
+PYTHONPATH=src python scripts/build_demo_site.py
 PYTHONPATH=src python scripts/serve_demo.py
-# → http://127.0.0.1:8765/
-# → http://127.0.0.1:8765/parent.html
+# → http://127.0.0.1:8765/child.html
 ```
 
 Static files live in `docs/` for GitHub Pages:
 
 - Pitch: https://azhartula.github.io/Per_learn/
-- Parent dashboard: https://azhartula.github.io/Per_learn/parent.html
+- **Watch a child adapt:** https://azhartula.github.io/Per_learn/child.html
+- One-session snapshot: https://azhartula.github.io/Per_learn/parent.html
 

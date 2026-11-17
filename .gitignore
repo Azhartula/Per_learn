@@ -13,6 +13,9 @@ build/
 outputs/**/__pycache__/
 outputs/sessions/session_*
 !outputs/sessions/demo_session.json
+# Keep aggregated trajectory export; ignore one-offs if added later
+outputs/trajectories/*
+!outputs/trajectories/children.json
 
 # Cursor: keep project rules only
 .cursor/*
