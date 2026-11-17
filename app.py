@@ -21,10 +21,11 @@ from pll.learner import (  # noqa: E402
     save_profile,
 )
 from pll.lessons import generate_lesson, render_lesson_markdown  # noqa: E402
+from pll.mcq import McqQuestion, as_mcq  # noqa: E402
 from pll.ollama_client import is_reachable  # noqa: E402
 from pll.parent_summary import METHOD_PLAIN  # noqa: E402
 from pll.prompts import SKILL_LABELS  # noqa: E402
-from pll.questions import Question, QuestionBank  # noqa: E402
+from pll.questions import QuestionBank  # noqa: E402
 from pll.sympy_check import verify_answer  # noqa: E402
 
 BIN_NAMES = ("novice", "intermediate", "advanced")
@@ -79,13 +80,20 @@ def _bank() -> QuestionBank:
     return st.session_state.bank
 
 
-def _render_question(q: Question) -> str | None:
+def _render_mcq(q: McqQuestion) -> str | None:
     st.markdown(f"**{q.stem}**")
-    key = f"ans_{st.session_state.phase}_{q.id}_{st.session_state.get('diag_index', 0)}_{st.session_state.get('practice_index', 0)}_{st.session_state.get('delayed_index', 0)}"
-    if q.choices:
-        choice = st.radio("Choose one:", list(q.choices), key=key, index=None)
-        return choice
-    return st.text_input("Your answer", key=key)
+    key = (
+        f"mcq_{st.session_state.phase}_{q.id}_"
+        f"{st.session_state.get('diag_index', 0)}_"
+        f"{st.session_state.get('practice_index', 0)}_"
+        f"{st.session_state.get('delayed_index', 0)}"
+    )
+    labels = [f"{chr(65 + i)}) {c}" for i, c in enumerate(q.choices)]
+    choice = st.radio("Choose one:", labels, key=key, index=None)
+    if choice is None:
+        return None
+    # Strip the "A) " prefix.
+    return choice.split(") ", 1)[-1]
 
 
 def _sidebar_status() -> None:
@@ -129,8 +137,8 @@ def _sidebar_status() -> None:
 def phase_home() -> None:
     st.title("Learn with me")
     st.write(
-        "I'll give you a few questions, pick a teaching method based on how you're doing, "
-        "generate a lesson, then check you again — that check trains how I teach you next time."
+        "All questions are **multiple choice**. I'll quiz you, pick a teaching method from how "
+        "you're doing, generate a lesson, then check you again — that check trains how I teach you next time."
     )
     profile = st.session_state.profile
     st.code(adaptation_summary(profile), language=None)
@@ -179,20 +187,19 @@ def phase_diagnostic() -> None:
         _finish_diagnostic()
         return
 
-    if st.session_state.get("_current_q") is None:
-        q = _next_diag_question()
-        if q is None:
+    if st.session_state.get("_current_mcq") is None:
+        raw = _next_diag_question()
+        if raw is None:
             st.error("No more questions available.")
             return
-        st.session_state._current_q = q
-    q = st.session_state._current_q
+        st.session_state._current_mcq = as_mcq(raw)
+    q = st.session_state._current_mcq
 
-    ans = _render_question(q)
-    if st.button("Submit answer", type="primary", disabled=ans is None or str(ans).strip() == ""):
+    ans = _render_mcq(q)
+    if st.button("Submit answer", type="primary", disabled=ans is None):
         from pll.diagnostic import Trial, _update_ability
 
-        expected = q.answer_sympy if q.answer_sympy is not None else q.answer
-        ok = verify_answer(expected, ans).ok
+        ok = verify_answer(q.answer, ans).ok
         st.session_state._diag_used.add(q.id)
         st.session_state._diag_ability = _update_ability(st.session_state._diag_ability, ok, q.difficulty)
         st.session_state._skill_correct[q.skill].append(ok)
@@ -207,7 +214,7 @@ def phase_diagnostic() -> None:
             )
         )
         st.session_state.diag_index += 1
-        st.session_state._current_q = None
+        st.session_state._current_mcq = None
         st.rerun()
 
 
@@ -308,7 +315,7 @@ def phase_lesson() -> None:
 
 
 def phase_practice() -> None:
-    st.header("Step 3 · Practice")
+    st.header("Step 3 · Practice (MCQ)")
     lesson = st.session_state.lesson
     items = lesson.practice
     i = st.session_state.practice_index
@@ -329,30 +336,29 @@ def phase_practice() -> None:
                 if q.id not in used
             ]
             pool = sorted(pool, key=lambda q: (q.difficulty, q.id))[:3]
-            st.session_state.delayed_items = pool
+            st.session_state.delayed_items = [as_mcq(q) for q in pool]
             st.session_state.delayed_index = 0
             st.session_state.delayed_correct = 0
+            st.session_state._current_practice_mcq = None
             st.rerun()
         return
 
     st.progress(i / max(len(items), 1), text=f"Practice {i + 1} of {len(items)}")
-    q = _bank().get(items[i]["id"])
-    ans = _render_question(q)
-    if st.button("Check", type="primary", disabled=ans is None or str(ans).strip() == ""):
-        expected = q.answer_sympy if q.answer_sympy is not None else q.answer
-        ok = verify_answer(expected, ans).ok
+    if st.session_state.get("_current_practice_mcq") is None:
+        st.session_state._current_practice_mcq = as_mcq(_bank().get(items[i]["id"]))
+    q = st.session_state._current_practice_mcq
+    ans = _render_mcq(q)
+    if st.button("Check", type="primary", disabled=ans is None):
+        ok = verify_answer(q.answer, ans).ok
         st.session_state.practice_total += 1
         st.session_state.practice_correct += int(ok)
         st.session_state.practice_index += 1
-        if ok:
-            st.success("Correct")
-        else:
-            st.warning(f"Answer was `{q.answer}`")
+        st.session_state._current_practice_mcq = None
         st.rerun()
 
 
 def phase_delayed() -> None:
-    st.header("Step 4 · Unassisted check")
+    st.header("Step 4 · Unassisted check (MCQ)")
     st.caption("No peeking — this score trains how I teach you next time.")
     items = st.session_state.delayed_items
     i = st.session_state.delayed_index
@@ -363,10 +369,9 @@ def phase_delayed() -> None:
 
     st.progress(i / max(len(items), 1), text=f"Check {i + 1} of {len(items)}")
     q = items[i]
-    ans = _render_question(q)
-    if st.button("Submit", type="primary", disabled=ans is None or str(ans).strip() == ""):
-        expected = q.answer_sympy if q.answer_sympy is not None else q.answer
-        ok = verify_answer(expected, ans).ok
+    ans = _render_mcq(q)
+    if st.button("Submit", type="primary", disabled=ans is None):
+        ok = verify_answer(q.answer, ans).ok
         st.session_state.delayed_correct += int(ok)
         st.session_state.delayed_index += 1
         st.rerun()
