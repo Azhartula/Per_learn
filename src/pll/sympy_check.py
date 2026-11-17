@@ -69,9 +69,14 @@ def parse_number(text: str) -> sp.Expr | None:
 
 
 def values_equal(a: Any, b: Any) -> bool:
+    # Ordering / multi-part text answers (e.g. "1/5, 1/3, 1/2") stay text compares.
+    a_s, b_s = str(a), str(b)
+    if "," in a_s or "," in b_s or " " in a_s.strip() and "/" in a_s and not _mixed_to_improper(a_s):
+        if _normalize_text(a_s) == _normalize_text(b_s):
+            return True
     ea, eb = parse_number(a), parse_number(b)
     if ea is None or eb is None:
-        return _normalize_text(str(a)) == _normalize_text(str(b))
+        return _normalize_text(a_s) == _normalize_text(b_s)
     try:
         return bool(sp.simplify(sp.Eq(ea, eb)) is True or sp.simplify(ea - eb) == 0)
     except Exception:

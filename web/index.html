@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PerLearn — Personalized Learning Loop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <p class="brand">Per<span>Learn</span></p>
+      <div class="nav-links">
+        <a href="#loop">The loop</a>
+        <a href="parent.html">Parent view</a>
+        <a class="btn btn-primary" href="parent.html">Open demo</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Personalized Learning Loop</div>
+        <h1>Not just what to learn next — how this child learns best.</h1>
+        <p>
+          PerLearn watches mastery over time, tests teaching methods against delayed checks,
+          and generates the next lesson in the method that sticks.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="parent.html">See parent dashboard</a>
+          <a class="btn btn-ghost" href="#evidence">View the pitch chart</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="assets/phase1_time_to_mastery.png" alt="Bandit vs fixed vs random time-to-mastery chart" />
+      </div>
+    </section>
+
+    <section class="section" id="loop">
+      <h2>One loop. Continuously re-measured.</h2>
+      <p class="lede">
+        We do not label children with learning styles. We measure which method reaches real mastery
+        for this child right now — and we change as they grow.
+      </p>
+      <div class="loop">
+        <article class="loop-step">
+          <strong>1 · Diagnose</strong>
+          Adaptive quiz estimates level and flags misconceptions.
+        </article>
+        <article class="loop-step">
+          <strong>2 · Choose method</strong>
+          A contextual bandit picks among four teaching approaches.
+        </article>
+        <article class="loop-step">
+          <strong>3 · Generate lesson</strong>
+          Lesson is written for that method; every answer is SymPy-checked.
+        </article>
+        <article class="loop-step">
+          <strong>4 · Delayed check</strong>
+          Unassisted review becomes the reward — practice scores never train the policy.
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="evidence">
+      <h2>The Phase 1 proof</h2>
+      <p class="lede">
+        In simulation on ASSISTments fraction parameters, the contextual bandit reaches mastery
+        faster than fixed or random method assignment, and matches the best method more often.
+      </p>
+      <div class="panel">
+        <img src="assets/phase1_time_to_mastery.png" alt="Phase 1 simulation chart" />
+      </div>
+    </section>
+
+    <footer class="footer">
+      Demo build for Year 5 fractions · Research module for NextGen-style platforms ·
+      <a href="https://github.com/Azhartula/Per_learn">GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

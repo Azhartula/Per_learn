@@ -11,6 +11,8 @@ build/
 
 # Keep demo chart + lesson samples; ignore local noise if added later
 outputs/**/__pycache__/
+outputs/sessions/session_*
+!outputs/sessions/demo_session.json
 
 # Cursor: keep project rules only
 .cursor/*

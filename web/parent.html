@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parent dashboard — PerLearn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <p class="brand">Per<span>Learn</span></p>
+      <div class="nav-links">
+        <a href="index.html">Pitch</a>
+        <a class="btn btn-ghost" href="index.html">Back</a>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top: 0.5rem;">
+      <div class="eyebrow">Parent dashboard</div>
+      <h2 id="student-title">Session for Alex</h2>
+      <p class="lede" id="session-meta">Loading demo session…</p>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="label">Best method now</div>
+          <div class="value" id="method-value">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Diagnostic</div>
+          <div class="value" id="diag-value">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Delayed check</div>
+          <div class="value" id="delay-value">—</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <h3 style="margin-top:0;font-family:var(--font-display);">Where they are</h3>
+          <div class="callout">
+            <strong>Lagging skill:</strong> <span id="weak-skill">—</span><br />
+            <strong>Why:</strong> <span id="why-text">—</span>
+          </div>
+          <div id="skill-bars"></div>
+          <div style="margin-top:1rem;">
+            <span class="tag" id="review-tag">Review</span>
+            <span class="tag" id="verify-tag">SymPy</span>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:0;font-family:var(--font-display);">Effort & teaching</h3>
+          <p id="effort-text" class="callout warn">—</p>
+          <p><strong>Lesson:</strong> <span id="lesson-title">—</span></p>
+          <p id="method-plain" style="color:var(--ink-soft);"></p>
+          <p style="font-size:0.9rem;color:var(--ink-soft);margin-top:1.4rem;">
+            This is not a fixed “learning style.” PerLearn re-tests methods as mastery changes
+            (expertise reversal), using delayed unassisted checks as the only bandit reward.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Generated from a Phase 3 live-loop session · <a href="index.html">Pitch page</a>
+    </footer>
+  </div>
+
+  <script src="assets/session.js"></script>
+  <script src="parent.js"></script>
+</body>
+</html>

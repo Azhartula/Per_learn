@@ -1,0 +1,93 @@
+{
+  "method": "worked_example",
+  "skill": "add_subtract_fractions",
+  "misconception_id": "add_across",
+  "misconception_label": "Adds numerators and denominators separately",
+  "title": "Adding And Subtracting Fractions — worked example",
+  "body": {
+    "title": "Adding And Subtracting Fractions — worked example",
+    "method": "worked_example",
+    "hook": "We'll learn adding and subtracting fractions by studying one clear example first.",
+    "worked_example": {
+      "problem": "Calculate 1/5 + 2/5.",
+      "steps": [
+        "Read the problem: Calculate 1/5 + 2/5.",
+        "Same denominator: add numerators only.",
+        "So the answer is 3/5.",
+        "Watch out: Adds numerators and denominators separately"
+      ],
+      "answer": "3/5",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "misconception_check": "Avoid this trap: Adds numerators and denominators separately",
+    "exit_ticket": {
+      "prompt": "Calculate 2/3 + 1/6.",
+      "answer": "5/6",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "practice": [
+      {
+        "id": "add_02",
+        "prompt": "Calculate 4/7 − 1/7.",
+        "answer": "3/7",
+        "answer_sympy": "3/7",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "add_03",
+        "prompt": "Calculate 1/4 + 1/4.",
+        "answer": "1/2",
+        "answer_sympy": "1/2",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "add_04",
+        "prompt": "Calculate 2/3 + 1/6.",
+        "answer": "5/6",
+        "answer_sympy": "5/6",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      }
+    ],
+    "all_verified": true
+  },
+  "practice": [
+    {
+      "id": "add_02",
+      "prompt": "Calculate 4/7 − 1/7.",
+      "answer": "3/7",
+      "answer_sympy": "3/7",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "add_03",
+      "prompt": "Calculate 1/4 + 1/4.",
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "add_04",
+      "prompt": "Calculate 2/3 + 1/6.",
+      "answer": "5/6",
+      "answer_sympy": "5/6",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    }
+  ],
+  "all_verified": true,
+  "source": "template",
+  "prompt": "You are a Year 5 maths tutor. Teach using WORKED EXAMPLE FIRST.\n\nSkill: adding and subtracting fractions\nActive misconception to address: Adds numerators and denominators separately\nTeaching method: worked_example\n\nRules:\n- Show one fully worked example step by step BEFORE any practice.\n- Explicitly warn against this misconception: Adds numerators and denominators separately\n- Then give 3 short practice questions.\n- You MUST use these exact correct answers (do not invent different answers):\n- example add_01: 3/5\n- add_02: 3/7\n- add_03: 1/2\n- add_04: 5/6\n\nReturn JSON only with this shape:\n{\n  \"title\": \"...\",\n  \"method\": \"worked_example\",\n  \"hook\": \"one sentence\",\n  \"worked_example\": {\"problem\": \"...\", \"steps\": [\"...\"], \"answer\": \"...\"},\n  \"misconception_check\": \"one sentence correcting the misconception\",\n  \"practice\": [{\"id\": \"...\", \"prompt\": \"...\", \"answer\": \"...\"}],\n  \"exit_ticket\": {\"prompt\": \"...\", \"answer\": \"...\"}\n}\n\nPractice stems (use these; keep their answers exactly):\n- id=add_02 | Calculate 4/7 − 1/7. | CORRECT_ANSWER=3/7\n- id=add_03 | Calculate 1/4 + 1/4. | CORRECT_ANSWER=1/2\n- id=add_04 | Calculate 2/3 + 1/6. | CORRECT_ANSWER=5/6\n"
+}

@@ -56,6 +56,20 @@ Lessons land in `outputs/lessons/`.
 3. Visual explanation  
 4. Real-world story / analogy  
 
-## Next (Phase 3)
+## Phase 3 — live loop
 
-Live diagnostic → bandit picks method → generate lesson → delayed check stub.
+```bash
+# Simulated student (good for pitches)
+PYTHONPATH=src python scripts/run_phase3.py --name Alex --mode demo
+
+# Type answers yourself
+PYTHONPATH=src python scripts/run_phase3.py --name Alex --mode interactive
+```
+
+Flow: adaptive diagnostic → contextual bandit picks method → SymPy-verified lesson → delayed unassisted check → parent summary.
+
+Outputs in `outputs/sessions/`.
+
+## Next (Phase 4)
+
+Parent dashboard UI + shareable pitch link.

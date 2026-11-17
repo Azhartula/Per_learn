@@ -57,7 +57,7 @@ def _template_lesson(
             "id": q.id,
             "prompt": q.stem,
             "answer": q.answer,
-            "answer_sympy": q.answer_sympy if q.answer_sympy is not None else q.answer,
+            "answer_sympy": q.answer_sympy,
             "choices": list(q.choices) if q.choices else None,
         }
         for q in practice
@@ -139,8 +139,9 @@ def _verify_lesson_dict(lesson: dict[str, Any]) -> tuple[dict[str, Any], bool]:
         nonlocal all_ok
         if key not in obj:
             return
-        expected = obj.get("answer_sympy", obj.get(key))
-        got = obj.get("model_answer", obj.get(key))
+        # Important: answer_sympy may be present but None for text-only items.
+        expected = obj[key] if obj.get("answer_sympy") is None else obj["answer_sympy"]
+        got = obj["model_answer"] if obj.get("model_answer") is not None else obj.get(key)
         result = verify_answer(expected, got)
         obj["verified"] = result.ok
         obj["verify_detail"] = result.detail
@@ -234,7 +235,7 @@ def generate_lesson(
                     "id": q.id,
                     "prompt": q.stem,
                     "answer": q.answer,
-                    "answer_sympy": q.answer_sympy if q.answer_sympy is not None else q.answer,
+                    "answer_sympy": q.answer_sympy,
                     "model_answer": next(
                         (
                             p.get("answer")
