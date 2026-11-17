@@ -7,13 +7,19 @@
 - https://azhartula.github.io/Per_learn/child.html
 - https://azhartula.github.io/Per_learn/live.html
 
-## Real GPU path
+## Learn with me (interactive)
+```bash
+PYTHONPATH=src python scripts/learn_with_me.py --name Azhar
+PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --status
+```
+You answer samples → bandit adapts method → Qwen 7B lesson → delayed check trains the policy.
+
+## Real GPU one-shot
 ```bash
 ollama serve
 ollama pull qwen2.5:7b
 PYTHONPATH=src python scripts/run_live_gpu.py --skill ordering_fractions --mastery 0.25
 ```
-Model: Qwen 2.5 7B via Ollama on RTX 3060. Answers SymPy-gated.
 
 ## Rules
 - Never add Cursor/AI as git co-author (use `git commit-tree` if injected).

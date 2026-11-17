@@ -81,15 +81,24 @@ PYTHONPATH=src python scripts/serve_demo.py
 # → http://127.0.0.1:8765/child.html
 ```
 
-### Real local GPU lesson (Ollama)
-
-Requires [Ollama](https://ollama.com) + a light model on your GPU (RTX 3060 works):
+### Learn with me (you answer → it adapts)
 
 ```bash
-ollama serve          # if not already running
+ollama serve          # if using GPU lessons
 ollama pull qwen2.5:7b
+PYTHONPATH=src python scripts/learn_with_me.py --name Azhar
+# see how it adapted:
+PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --status
+# faster template-only lessons:
+PYTHONPATH=src python scripts/learn_with_me.py --name Azhar --no-ollama
+```
+
+Each session: sample quiz → bandit picks method → lesson (Qwen 7B) → practice → **unassisted check trains the bandit** → profile saved under `outputs/learners/`.
+
+### Real local GPU lesson (Ollama)
+
+```bash
 PYTHONPATH=src python scripts/run_live_gpu.py --skill ordering_fractions --mastery 0.25
-# or full loop with local model:
 PYTHONPATH=src python scripts/run_phase3.py --mode demo --ollama --model qwen2.5:7b
 ```
 

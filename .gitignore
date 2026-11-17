@@ -21,6 +21,8 @@ outputs/live_gpu/*
 !outputs/live_gpu/live_meta.json
 !outputs/live_gpu/*__live.md
 !outputs/live_gpu/*.json
+# Personal learner profiles stay local by default
+outputs/learners/
 
 # Cursor: keep project rules only
 .cursor/*
