@@ -8,4 +8,5 @@ alwaysApply: true
 - NEVER add `Co-authored-by:` trailers for Cursor, Copilot, Claude, or any AI/agent.
 - NEVER add co-author metadata via commit message hooks, trailers, or `-m` extras.
 - Commits must be authored only as the human user (Azhartula / local git identity).
-- If a tool tries to inject a co-author, strip it before committing.
+- If a tool injects a co-author (Cursor often appends `Co-authored-by: Cursor <cursoragent@cursor.com>` on `git commit`), rewrite the commit with `git commit-tree` (clean message, no trailer) before push.
+- Verify with: `git log -1 --format=%B | grep -i co-authored` → must find nothing.
