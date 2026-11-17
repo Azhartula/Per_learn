@@ -1,0 +1,86 @@
+{
+  "method": "visual",
+  "skill": "multiply_fractions",
+  "misconception_id": "multiply_add_confusion",
+  "misconception_label": "Multiplies fractions by adding instead",
+  "title": "Multiplying Fractions — visual",
+  "body": {
+    "title": "Multiplying Fractions — visual",
+    "method": "visual",
+    "visual": {
+      "type": "fraction_bars",
+      "ascii": "[############............] 1/2\n[######..................] 1/4",
+      "caption": "Longer shaded bar = larger fraction when the whole is the same."
+    },
+    "explanation": "Use the picture to understand multiplying fractions. Example: Calculate 1/2 × 1/3. → 1/6. Multiply numerators and denominators: 1×1 / 2×3.",
+    "misconception_check": "The picture shows why this is wrong: Multiplies fractions by adding instead",
+    "exit_ticket": {
+      "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+      "answer": "1/6",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "practice": [
+      {
+        "id": "mul_02",
+        "prompt": "Calculate 2/5 × 1/2.",
+        "answer": "1/5",
+        "answer_sympy": "1/5",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "mul_03",
+        "prompt": "Calculate 3/4 × 2/3.",
+        "answer": "1/2",
+        "answer_sympy": "1/2",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "mul_04",
+        "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+        "answer": "1/6",
+        "answer_sympy": "1/6",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      }
+    ],
+    "all_verified": true
+  },
+  "practice": [
+    {
+      "id": "mul_02",
+      "prompt": "Calculate 2/5 × 1/2.",
+      "answer": "1/5",
+      "answer_sympy": "1/5",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "mul_03",
+      "prompt": "Calculate 3/4 × 2/3.",
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "mul_04",
+      "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+      "answer": "1/6",
+      "answer_sympy": "1/6",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    }
+  ],
+  "all_verified": true,
+  "source": "template",
+  "prompt": "You are a Year 5 maths tutor. Teach using VISUAL EXPLANATION (fraction bars / number lines).\n\nSkill: multiplying fractions\nActive misconception to address: Multiplies fractions by adding instead\nTeaching method: visual\n\nRules:\n- Describe fraction bars or a number line in plain text (ASCII is fine).\n- Make the visual do the teaching; keep words short.\n- Explicitly show why this misconception is wrong: Multiplies fractions by adding instead\n- Then give 3 practice questions.\n- You MUST use these exact correct answers:\n- example mul_01: 1/6\n- mul_02: 1/5\n- mul_03: 1/2\n- mul_04: 1/6\n\nReturn JSON only with this shape:\n{\n  \"title\": \"...\",\n  \"method\": \"visual\",\n  \"visual\": {\"type\": \"fraction_bars|number_line\", \"ascii\": \"...\", \"caption\": \"...\"},\n  \"explanation\": \"2-4 short sentences\",\n  \"misconception_check\": \"one sentence correcting the misconception\",\n  \"practice\": [{\"id\": \"...\", \"prompt\": \"...\", \"answer\": \"...\"}],\n  \"exit_ticket\": {\"prompt\": \"...\", \"answer\": \"...\"}\n}\n\nPractice stems (use these; keep their answers exactly):\n- id=mul_02 | Calculate 2/5 × 1/2. | CORRECT_ANSWER=1/5\n- id=mul_03 | Calculate 3/4 × 2/3. | CORRECT_ANSWER=1/2\n- id=mul_04 | What is 1/4 of 2/3? (Same as 1/4 × 2/3.) | CORRECT_ANSWER=1/6\n"
+}

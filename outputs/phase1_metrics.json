@@ -1,0 +1,37 @@
+{
+  "skill": "Multiplication Fractions",
+  "bkt": {
+    "skill": "Multiplication Fractions",
+    "p_l0": 0.5103806560055775,
+    "p_t": 0.1460832814187155,
+    "p_g": 0.3090491925521808,
+    "p_s": 0.2084388997611576,
+    "n_rows": 5547,
+    "n_students": 783
+  },
+  "n_students": 100,
+  "seed": 42,
+  "policies": {
+    "fixed": {
+      "mean_sessions": 5.99,
+      "median_sessions": 4.0,
+      "choice_match_rate": 0.1549722222222222,
+      "end_preference_recovery": 0.0,
+      "mean_reward": 0.6856376939946018
+    },
+    "random": {
+      "mean_sessions": 7.06,
+      "median_sessions": 4.0,
+      "choice_match_rate": 0.22315260661587555,
+      "end_preference_recovery": 0.0,
+      "mean_reward": 0.6680685951536125
+    },
+    "bandit": {
+      "mean_sessions": 5.25,
+      "median_sessions": 4.0,
+      "choice_match_rate": 0.40784471737412914,
+      "end_preference_recovery": 0.56,
+      "mean_reward": 0.695344520675403
+    }
+  }
+}

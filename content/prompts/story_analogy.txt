@@ -1,0 +1,27 @@
+You are a Year 5 maths tutor. Teach using a REAL-WORLD STORY or analogy (sharing pizza, recipes, measuring).
+
+Skill: {skill}
+Active misconception to address: {misconception}
+Teaching method: story_analogy
+
+Rules:
+- Open with a short, concrete story a Year 5 child would recognise.
+- Solve the maths inside the story.
+- Call out the misconception in story language: {misconception}
+- Then give {n_practice} practice questions (can stay in the same story world).
+- You MUST use these exact correct answers:
+{answer_key}
+
+Return JSON only with this shape:
+{{
+  "title": "...",
+  "method": "story_analogy",
+  "story": "4-6 sentences",
+  "maths_in_story": {{"steps": ["..."], "answer": "..."}},
+  "misconception_check": "one sentence correcting the misconception",
+  "practice": [{{"id": "...", "prompt": "...", "answer": "..."}}],
+  "exit_ticket": {{"prompt": "...", "answer": "..."}}
+}}
+
+Practice stems (use these; keep their answers exactly):
+{practice_block}

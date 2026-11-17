@@ -1,0 +1,18 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+data/as.csv
+*.egg-info/
+dist/
+build/
+
+# Keep demo chart + lesson samples; ignore local noise if added later
+outputs/**/__pycache__/
+
+# Cursor: keep project rules only
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**

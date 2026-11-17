@@ -1,0 +1,97 @@
+{
+  "method": "problem_first",
+  "skill": "multiply_fractions",
+  "misconception_id": "multiply_add_confusion",
+  "misconception_label": "Multiplies fractions by adding instead",
+  "title": "Multiplying Fractions — problem first",
+  "body": {
+    "title": "Multiplying Fractions — problem first",
+    "method": "problem_first",
+    "challenge": {
+      "problem": "Calculate 1/2 × 1/3.",
+      "answer": "1/6",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "reveal": {
+      "steps": [
+        "Read the problem: Calculate 1/2 × 1/3.",
+        "Multiply numerators and denominators: 1×1 / 2×3.",
+        "So the answer is 1/6.",
+        "Watch out: Multiplies fractions by adding instead"
+      ],
+      "answer": "1/6",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "misconception_check": "If you thought differently, check: Multiplies fractions by adding instead",
+    "exit_ticket": {
+      "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+      "answer": "1/6",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "practice": [
+      {
+        "id": "mul_02",
+        "prompt": "Calculate 2/5 × 1/2.",
+        "answer": "1/5",
+        "answer_sympy": "1/5",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "mul_03",
+        "prompt": "Calculate 3/4 × 2/3.",
+        "answer": "1/2",
+        "answer_sympy": "1/2",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "mul_04",
+        "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+        "answer": "1/6",
+        "answer_sympy": "1/6",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      }
+    ],
+    "all_verified": true
+  },
+  "practice": [
+    {
+      "id": "mul_02",
+      "prompt": "Calculate 2/5 × 1/2.",
+      "answer": "1/5",
+      "answer_sympy": "1/5",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "mul_03",
+      "prompt": "Calculate 3/4 × 2/3.",
+      "answer": "1/2",
+      "answer_sympy": "1/2",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "mul_04",
+      "prompt": "What is 1/4 of 2/3? (Same as 1/4 × 2/3.)",
+      "answer": "1/6",
+      "answer_sympy": "1/6",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    }
+  ],
+  "all_verified": true,
+  "source": "template",
+  "prompt": "You are a Year 5 maths tutor. Teach using PROBLEM FIRST, then explanation.\n\nSkill: multiplying fractions\nActive misconception to address: Multiplies fractions by adding instead\nTeaching method: problem_first\n\nRules:\n- Start with a short challenge problem (no solution yet).\n- Ask the student to attempt it mentally.\n- Then reveal the solution and explain why common mistakes (especially: Multiplies fractions by adding instead) fail.\n- Finish with 3 practice questions.\n- You MUST use these exact correct answers:\n- example mul_01: 1/6\n- mul_02: 1/5\n- mul_03: 1/2\n- mul_04: 1/6\n\nReturn JSON only with this shape:\n{\n  \"title\": \"...\",\n  \"method\": \"problem_first\",\n  \"challenge\": {\"problem\": \"...\", \"answer\": \"...\"},\n  \"reveal\": {\"steps\": [\"...\"], \"answer\": \"...\"},\n  \"misconception_check\": \"one sentence correcting the misconception\",\n  \"practice\": [{\"id\": \"...\", \"prompt\": \"...\", \"answer\": \"...\"}],\n  \"exit_ticket\": {\"prompt\": \"...\", \"answer\": \"...\"}\n}\n\nPractice stems (use these; keep their answers exactly):\n- id=mul_02 | Calculate 2/5 × 1/2. | CORRECT_ANSWER=1/5\n- id=mul_03 | Calculate 3/4 × 2/3. | CORRECT_ANSWER=1/2\n- id=mul_04 | What is 1/4 of 2/3? (Same as 1/4 × 2/3.) | CORRECT_ANSWER=1/6\n"
+}

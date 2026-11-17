@@ -1,0 +1,11 @@
+---
+description: Never add Cursor (or any AI) as a git commit co-author
+alwaysApply: true
+---
+
+# No AI co-authors on commits
+
+- NEVER add `Co-authored-by:` trailers for Cursor, Copilot, Claude, or any AI/agent.
+- NEVER add co-author metadata via commit message hooks, trailers, or `-m` extras.
+- Commits must be authored only as the human user (Azhartula / local git identity).
+- If a tool tries to inject a co-author, strip it before committing.
