@@ -1,36 +1,42 @@
 # Progress handoff
 
 **Last updated:** 2026-11-18  
-**Status:** Real-work track (integrity + offline eval + pilot protocol) — demo polish frozen  
+**Status:** Buyer Results Demo for AI video schools  
 **GitHub:** https://github.com/Azhartula/Per_learn  
 
-## What is real now
+## Product framing
 
-- Lesson integrity: `answers_ok` vs `lesson_ok` ([`src/pll/lesson_integrity.py`](src/pll/lesson_integrity.py)); false GPU caption quarantined
-- Event JSONL schema v1.0 ([`src/pll/events.py`](src/pll/events.py)) wired into loop + Streamlit
-- Offline eval pack: [`outputs/eval/`](outputs/eval/) — BKT holdout + demo/neutral/adversarial policy ablations
-- Question bank v2: **86** items, forms A/B/C, distractor→misconception maps
-- Pilot protocol + dry-run analysis: [`docs/pilot/`](docs/pilot/), [`outputs/pilot/`](outputs/pilot/)
+**ICP:** Homeschool / AI-school platforms that generate AI learning videos.
 
-## Commands
+**Their stack:** generate video → watch → quiz → next topic.  
+**Our layer:** evaluate → weak/strong + which style sticks → next **short specialised** video brief.
+
+**Buyer value:** personal-level understanding + **lower render minutes** per mastered skill.
+
+## Meeting demo (default)
 
 ```bash
-# Tests
-PYTHONPATH=src pytest -q
-
-# Offline eval (ASSISTments + sim ablations)
-PYTHONPATH=src python scripts/run_offline_eval.py
-
-# Protocol dry-run (simulated respondents — not human efficacy)
-PYTHONPATH=src python scripts/run_pilot_dryrun.py --n 16
-PYTHONPATH=src python scripts/run_pilot_analysis.py
+streamlit run app.py
+# → Show results demo →
 ```
 
-## Next for human evidence
+Runbook: [`docs/buyer/MEETING_RUNBOOK.md`](docs/buyer/MEETING_RUNBOOK.md)  
+Pack: [`outputs/buyer_demo/`](outputs/buyer_demo/)
 
-Recruit 12–20 consented volunteers; run Session 1 + 24–72h Session 2 per [`docs/pilot/PROTOCOL.md`](docs/pilot/PROTOCOL.md).
+```bash
+PYTHONPATH=src python scripts/build_buyer_results_pack.py
+```
+
+## Other proof
+
+```bash
+PYTHONPATH=src pytest -q
+PYTHONPATH=src python scripts/run_offline_eval.py
+PYTHONPATH=src python scripts/run_qwen_agent_pilot.py --n 16
+```
 
 ## Rules
 
-- Never add Cursor/AI as git co-author (use `git commit-tree` if injected).
-- Do not claim child efficacy from dry-runs or demo-profile simulations.
+- Never add Cursor/AI as git co-author.
+- Label agent runs `respondent=llm_agent`.
+- Cost figures are duration proxies, not GPU invoices.

@@ -1,45 +1,51 @@
-# PerLearn delayed-outcome pilot protocol
+# PerLearn evaluation protocol (AI learning platforms)
 
 ## Purpose
 
-Collect the first **non-simulated** signal that teaching-method assignment relates to delayed mastery. This is a protocol + dry-run package until human volunteers complete Session 2.
+Prove the **method layer** inside an AI learning product:
 
-## Eligibility
+diagnose gap → choose teaching style → teach → check if it stuck → update policy.
 
-- Consented adults or teens (16+) for the first wave
-- Comfortable with Year 5 fraction questions
-- Willing to return 24–72 hours later for a short no-help check
+This is product evaluation for AI platforms — **not** a “go recruit research volunteers” pitch.
+
+## Primary proof path (what we pitch)
+
+**LLM learner agents** (local Qwen) run the same loop a student would:
+
+1. Diagnostic (Form A)
+2. Method assignment (`adaptive_method` vs fixed baseline)
+3. Lesson + practice
+4. Immediate post (Form B)
+5. Delayed check with faded memory (Form C) → trains the policy
+
+Command:
+
+```bash
+PYTHONPATH=src python scripts/run_qwen_agent_pilot.py --n 16
+```
+
+Logs use `respondent=llm_agent`. This matches how AI platforms ship: agent/synthetic traffic + event telemetry before (and alongside) live users.
+
+## What companies actually care about
+
+| Proof | Why it matters |
+|-------|----------------|
+| Event schema + integrity gates | Safe to embed in their tutor |
+| Offline ASSISTments BKT eval | Learner model isn’t vapor |
+| Qwen agent cohort delayed loop | Method policy runs end-to-end on AI learners |
+| Method match vs mismatch signal | “How we teach” moves outcomes, not only “what next” |
+
+## Optional later (not the pitch)
+
+If a **school / tutoring partner** wants field outcomes on their own learners, reuse this protocol with `respondent=human` and a real 24–72h gap. That is a **partner deployment**, not our go-to-market story.
 
 ## Arms
 
-Randomize participant to:
-1. **adaptive_method** — bandit selects among four teaching methods
-2. **fixed_worked_example** — always worked example
-
-## Session 1 (~20 min)
-
-1. Consent + learner code (no real names in shared logs)
-2. Form A diagnostic (MCQ)
-3. Method assignment per arm
-4. Template lesson (Ollama optional; must pass integrity)
-5. Practice (logged as `practice` — does **not** train policy)
-6. Immediate post Form B (`immediate_post`)
-
-## Gap
-
-24–72 hours. No study materials.
-
-## Session 2 (~8 min)
-
-1. Form C delayed check only (`delayed_24h`)
-2. For adaptive arm: update bandit with delayed score
-3. Debrief
+1. `adaptive_method` — contextual bandit picks teaching style  
+2. `fixed_worked_example` — fixed pedagogy baseline  
 
 ## Data
 
-All events → `outputs/events/session_*.jsonl` (schema v1.0).  
-Analysis → `scripts/run_pilot_analysis.py`.
-
-## Ethics note
-
-No school deployment in wave 1. Delete on request. Do not share identifiable data.
+Events → `outputs/events/session_*.jsonl`  
+Qwen pack → `outputs/pilot_qwen/`  
+Analysis → `scripts/run_pilot_analysis.py`

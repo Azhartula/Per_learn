@@ -1,0 +1,488 @@
+{
+  "note": "Buyer meeting pack. Cost figures are duration proxies. Delayed scores are from Qwen llm_agent cohort \u2014 pipeline proof, not child RCT.",
+  "source": "/home/azhar-work/Desktop/My_ideas/Per_learn/outputs/pilot_qwen/qwen_agent_summary.json",
+  "n_learners": 16,
+  "method_match_vs_mismatch": {
+    "matched_n": 3,
+    "matched_mean_delayed": 0.5555555555555555,
+    "mismatched_n": 13,
+    "mismatched_mean_delayed": 0.28205128205128205
+  },
+  "by_arm": {
+    "adaptive_method": {
+      "n": 8,
+      "mean_delayed": 0.29166666666666663,
+      "std_delayed": 0.33034373632170494
+    },
+    "fixed_worked_example": {
+      "n": 8,
+      "mean_delayed": 0.375,
+      "std_delayed": 0.2136233148205519
+    }
+  },
+  "cost_proxy": {
+    "generic_minutes_if_full_topic_each": 176.0,
+    "specialised_minutes_sum": 48.0,
+    "minutes_saved_proxy": 128.0,
+    "cost_ratio_specialised_over_generic": 0.273,
+    "generic_minutes_per_video": 11.0
+  },
+  "case_cards": [
+    {
+      "learner": "qwen_00_novice_scaffold",
+      "persona": "novice_scaffold",
+      "skill": "equivalent_fractions",
+      "method": "visual",
+      "style_bias": "worked_example",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 2.5,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.5
+    },
+    {
+      "learner": "qwen_01_novice_impulsive",
+      "persona": "novice_impulsive",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_02_mid_visual",
+      "persona": "mid_visual",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_03_mid_story",
+      "persona": "mid_story",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "story_analogy",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_04_rising_problem",
+      "persona": "rising_problem",
+      "skill": "equivalent_fractions",
+      "method": "problem_first",
+      "style_bias": "problem_first",
+      "match_bias": true,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.5,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 7.5
+    },
+    {
+      "learner": "qwen_05_strong_transfer",
+      "persona": "strong_transfer",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "problem_first",
+      "match_bias": false,
+      "delayed_score": 0.6666666666666666,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_06_anxious_careful",
+      "persona": "anxious_careful",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "worked_example",
+      "match_bias": true,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_07_denominator_trap",
+      "persona": "denominator_trap",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_08_novice_scaffold",
+      "persona": "novice_scaffold",
+      "skill": "ordering_fractions",
+      "method": "story_analogy",
+      "style_bias": "worked_example",
+      "match_bias": false,
+      "delayed_score": 0.0,
+      "immediate_score": 0.0,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_09_novice_impulsive",
+      "persona": "novice_impulsive",
+      "skill": "ordering_fractions",
+      "method": "worked_example",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.0,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_10_mid_visual",
+      "persona": "mid_visual",
+      "skill": "equivalent_fractions",
+      "method": "story_analogy",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.0,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_11_mid_story",
+      "persona": "mid_story",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "story_analogy",
+      "match_bias": false,
+      "delayed_score": 0.6666666666666666,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_12_rising_problem",
+      "persona": "rising_problem",
+      "skill": "ordering_fractions",
+      "method": "worked_example",
+      "style_bias": "problem_first",
+      "match_bias": false,
+      "delayed_score": 0.0,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_13_strong_transfer",
+      "persona": "strong_transfer",
+      "skill": "ordering_fractions",
+      "method": "worked_example",
+      "style_bias": "problem_first",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.3333333333333333,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_14_anxious_careful",
+      "persona": "anxious_careful",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "worked_example",
+      "match_bias": true,
+      "delayed_score": 1.0,
+      "immediate_score": 1.0,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    },
+    {
+      "learner": "qwen_15_denominator_trap",
+      "persona": "denominator_trap",
+      "skill": "equivalent_fractions",
+      "method": "worked_example",
+      "style_bias": "visual",
+      "match_bias": false,
+      "delayed_score": 0.3333333333333333,
+      "immediate_score": 0.6666666666666666,
+      "estimated_minutes_specialised": 3.0,
+      "estimated_minutes_generic": 11.0,
+      "minutes_saved_proxy": 8.0
+    }
+  ],
+  "highlight_briefs": [
+    {
+      "case": {
+        "learner": "qwen_14_anxious_careful",
+        "persona": "anxious_careful",
+        "skill": "equivalent_fractions",
+        "method": "worked_example",
+        "style_bias": "worked_example",
+        "match_bias": true,
+        "delayed_score": 1.0,
+        "immediate_score": 1.0,
+        "estimated_minutes_specialised": 3.0,
+        "estimated_minutes_generic": 11.0,
+        "minutes_saved_proxy": 8.0
+      },
+      "brief": {
+        "skill": "equivalent_fractions",
+        "skill_label": "equivalent fractions",
+        "method": "worked_example",
+        "method_label": "worked examples first, then practice",
+        "misconception_id": "bigger_denominator_bigger",
+        "misconception_label": "Thinks a bigger denominator means a bigger fraction",
+        "title": "Equivalent Fractions \u2014 worked examples first, then practice (specialised)",
+        "max_minutes": 3.0,
+        "estimated_minutes_generic": 11.0,
+        "estimated_minutes_specialised": 3.0,
+        "cost_proxy": 0.273,
+        "minutes_saved": 8.0,
+        "do_not_reteach": [
+          "Do not re-teach the entire fractions unit.",
+          "Do not open with a long curriculum overview."
+        ],
+        "scenes": [
+          {
+            "order": 1,
+            "title": "Hook the gap",
+            "seconds": 25,
+            "narration_cue": "Today we fix one mix-up in equivalent fractions.",
+            "visual_cue": "Title card + weak-spot badge"
+          },
+          {
+            "order": 2,
+            "title": "Worked example",
+            "seconds": 70,
+            "narration_cue": "Watch every step on one clear problem.",
+            "visual_cue": "Step-by-step board; highlight each step"
+          },
+          {
+            "order": 3,
+            "title": "Misconception contrast",
+            "seconds": 40,
+            "narration_cue": "Avoid this trap: Thinks a bigger denominator means a bigger fraction",
+            "visual_cue": "Split screen: wrong vs right"
+          },
+          {
+            "order": 4,
+            "title": "You try (guided)",
+            "seconds": 35,
+            "narration_cue": "Pause and try a near twin; then reveal.",
+            "visual_cue": "Pause card + reveal answer"
+          },
+          {
+            "order": 5,
+            "title": "Exit check",
+            "seconds": 20,
+            "narration_cue": "One no-help question before we stop.",
+            "visual_cue": "Single MCQ overlay"
+          }
+        ],
+        "generation_controls": {
+          "scope": "single_gap",
+          "teaching_method": "worked_example",
+          "misconception_id": "bigger_denominator_bigger",
+          "duration_cap_minutes": 3.0,
+          "narration_density": "medium",
+          "visual_schema": "board",
+          "include_misconception_contrast": true,
+          "include_exit_check": true
+        },
+        "note": "Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator."
+      },
+      "brief_markdown": "# Equivalent Fractions \u2014 worked examples first, then practice (specialised)\n\n**Skill:** equivalent fractions  \n**Teaching style:** worked examples first, then practice  \n**Target mix-up:** Thinks a bigger denominator means a bigger fraction  \n**Duration cap:** 3.0 min  \n**vs generic topic video:** 11.0 min  \n**Minutes saved (proxy):** 8.0  \n**Cost proxy (specialised/generic):** 0.27  \n\n_Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator._\n\n## Do not reteach\n- Do not re-teach the entire fractions unit.\n- Do not open with a long curriculum overview.\n\n## Scenes\n### 1. Hook the gap (~25s)\n- Narration: Today we fix one mix-up in equivalent fractions.\n- Visual: Title card + weak-spot badge\n\n### 2. Worked example (~70s)\n- Narration: Watch every step on one clear problem.\n- Visual: Step-by-step board; highlight each step\n\n### 3. Misconception contrast (~40s)\n- Narration: Avoid this trap: Thinks a bigger denominator means a bigger fraction\n- Visual: Split screen: wrong vs right\n\n### 4. You try (guided) (~35s)\n- Narration: Pause and try a near twin; then reveal.\n- Visual: Pause card + reveal answer\n\n### 5. Exit check (~20s)\n- Narration: One no-help question before we stop.\n- Visual: Single MCQ overlay\n\n## Generation controls\n```json\n{\n  \"scope\": \"single_gap\",\n  \"teaching_method\": \"worked_example\",\n  \"misconception_id\": \"bigger_denominator_bigger\",\n  \"duration_cap_minutes\": 3.0,\n  \"narration_density\": \"medium\",\n  \"visual_schema\": \"board\",\n  \"include_misconception_contrast\": true,\n  \"include_exit_check\": true\n}\n```"
+    },
+    {
+      "case": {
+        "learner": "qwen_08_novice_scaffold",
+        "persona": "novice_scaffold",
+        "skill": "ordering_fractions",
+        "method": "story_analogy",
+        "style_bias": "worked_example",
+        "match_bias": false,
+        "delayed_score": 0.0,
+        "immediate_score": 0.0,
+        "estimated_minutes_specialised": 3.0,
+        "estimated_minutes_generic": 11.0,
+        "minutes_saved_proxy": 8.0
+      },
+      "brief": {
+        "skill": "ordering_fractions",
+        "skill_label": "ordering and comparing fractions",
+        "method": "story_analogy",
+        "method_label": "real-world stories and analogies",
+        "misconception_id": "bigger_denominator_bigger",
+        "misconception_label": "Thinks a bigger denominator means a bigger fraction",
+        "title": "Ordering And Comparing Fractions \u2014 real-world stories and analogies (specialised)",
+        "max_minutes": 3.0,
+        "estimated_minutes_generic": 11.0,
+        "estimated_minutes_specialised": 3.0,
+        "cost_proxy": 0.273,
+        "minutes_saved": 8.0,
+        "do_not_reteach": [
+          "Do not re-teach the entire fractions unit.",
+          "Do not open with a long curriculum overview."
+        ],
+        "scenes": [
+          {
+            "order": 1,
+            "title": "Real-world hook",
+            "seconds": 30,
+            "narration_cue": "A sharing story for ordering and comparing fractions.",
+            "visual_cue": "Kitchen / pizza / friends scene"
+          },
+          {
+            "order": 2,
+            "title": "Maths in the story",
+            "seconds": 65,
+            "narration_cue": "Map the story onto the fraction steps.",
+            "visual_cue": "Story \u2192 symbols side by side"
+          },
+          {
+            "order": 3,
+            "title": "Misconception contrast",
+            "seconds": 35,
+            "narration_cue": "In the story, don't: Thinks a bigger denominator means a bigger fraction",
+            "visual_cue": "Story beat that catches the trap"
+          },
+          {
+            "order": 4,
+            "title": "New story twin",
+            "seconds": 30,
+            "narration_cue": "Same idea, new numbers.",
+            "visual_cue": "Second short story prompt"
+          },
+          {
+            "order": 5,
+            "title": "Exit check",
+            "seconds": 20,
+            "narration_cue": "Leave the story; answer the maths.",
+            "visual_cue": "MCQ overlay"
+          }
+        ],
+        "generation_controls": {
+          "scope": "single_gap",
+          "teaching_method": "story_analogy",
+          "misconception_id": "bigger_denominator_bigger",
+          "duration_cap_minutes": 3.0,
+          "narration_density": "medium",
+          "visual_schema": "board",
+          "include_misconception_contrast": true,
+          "include_exit_check": true
+        },
+        "note": "Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator."
+      },
+      "brief_markdown": "# Ordering And Comparing Fractions \u2014 real-world stories and analogies (specialised)\n\n**Skill:** ordering and comparing fractions  \n**Teaching style:** real-world stories and analogies  \n**Target mix-up:** Thinks a bigger denominator means a bigger fraction  \n**Duration cap:** 3.0 min  \n**vs generic topic video:** 11.0 min  \n**Minutes saved (proxy):** 8.0  \n**Cost proxy (specialised/generic):** 0.27  \n\n_Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator._\n\n## Do not reteach\n- Do not re-teach the entire fractions unit.\n- Do not open with a long curriculum overview.\n\n## Scenes\n### 1. Real-world hook (~30s)\n- Narration: A sharing story for ordering and comparing fractions.\n- Visual: Kitchen / pizza / friends scene\n\n### 2. Maths in the story (~65s)\n- Narration: Map the story onto the fraction steps.\n- Visual: Story \u2192 symbols side by side\n\n### 3. Misconception contrast (~35s)\n- Narration: In the story, don't: Thinks a bigger denominator means a bigger fraction\n- Visual: Story beat that catches the trap\n\n### 4. New story twin (~30s)\n- Narration: Same idea, new numbers.\n- Visual: Second short story prompt\n\n### 5. Exit check (~20s)\n- Narration: Leave the story; answer the maths.\n- Visual: MCQ overlay\n\n## Generation controls\n```json\n{\n  \"scope\": \"single_gap\",\n  \"teaching_method\": \"story_analogy\",\n  \"misconception_id\": \"bigger_denominator_bigger\",\n  \"duration_cap_minutes\": 3.0,\n  \"narration_density\": \"medium\",\n  \"visual_schema\": \"board\",\n  \"include_misconception_contrast\": true,\n  \"include_exit_check\": true\n}\n```"
+    },
+    {
+      "case": {
+        "learner": "qwen_00_novice_scaffold",
+        "persona": "novice_scaffold",
+        "skill": "equivalent_fractions",
+        "method": "visual",
+        "style_bias": "worked_example",
+        "match_bias": false,
+        "delayed_score": 0.3333333333333333,
+        "immediate_score": 0.3333333333333333,
+        "estimated_minutes_specialised": 2.5,
+        "estimated_minutes_generic": 11.0,
+        "minutes_saved_proxy": 8.5
+      },
+      "brief": {
+        "skill": "equivalent_fractions",
+        "skill_label": "equivalent fractions",
+        "method": "visual",
+        "method_label": "visual explanations (fraction bars / number lines)",
+        "misconception_id": "bigger_denominator_bigger",
+        "misconception_label": "Thinks a bigger denominator means a bigger fraction",
+        "title": "Equivalent Fractions \u2014 visual explanations (fraction bars / number lines) (specialised)",
+        "max_minutes": 2.5,
+        "estimated_minutes_generic": 11.0,
+        "estimated_minutes_specialised": 2.5,
+        "cost_proxy": 0.227,
+        "minutes_saved": 8.5,
+        "do_not_reteach": [
+          "Do not re-teach the entire fractions unit.",
+          "Do not open with a long curriculum overview."
+        ],
+        "scenes": [
+          {
+            "order": 1,
+            "title": "See the size",
+            "seconds": 25,
+            "narration_cue": "We compare equivalent fractions with a picture.",
+            "visual_cue": "Fraction bars / number line intro"
+          },
+          {
+            "order": 2,
+            "title": "Build the diagram",
+            "seconds": 60,
+            "narration_cue": "Watch the bars grow correctly.",
+            "visual_cue": "Animated bars matching the example"
+          },
+          {
+            "order": 3,
+            "title": "Misconception contrast",
+            "seconds": 40,
+            "narration_cue": "Picture shows why this fails: Thinks a bigger denominator means a bigger fraction",
+            "visual_cue": "Wrong bar vs right bar"
+          },
+          {
+            "order": 4,
+            "title": "Read the diagram",
+            "seconds": 30,
+            "narration_cue": "Answer from the picture alone.",
+            "visual_cue": "Silent diagram + prompt"
+          },
+          {
+            "order": 5,
+            "title": "Exit check",
+            "seconds": 20,
+            "narration_cue": "One check without the old wrong habit.",
+            "visual_cue": "MCQ overlay"
+          }
+        ],
+        "generation_controls": {
+          "scope": "single_gap",
+          "teaching_method": "visual",
+          "misconception_id": "bigger_denominator_bigger",
+          "duration_cap_minutes": 2.5,
+          "narration_density": "low",
+          "visual_schema": "fraction_bars",
+          "include_misconception_contrast": true,
+          "include_exit_check": true
+        },
+        "note": "Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator."
+      },
+      "brief_markdown": "# Equivalent Fractions \u2014 visual explanations (fraction bars / number lines) (specialised)\n\n**Skill:** equivalent fractions  \n**Teaching style:** visual explanations (fraction bars / number lines)  \n**Target mix-up:** Thinks a bigger denominator means a bigger fraction  \n**Duration cap:** 2.5 min  \n**vs generic topic video:** 11.0 min  \n**Minutes saved (proxy):** 8.5  \n**Cost proxy (specialised/generic):** 0.23  \n\n_Cost proxy uses estimated render minutes, not your GPU invoice. Feed this brief into your video generator._\n\n## Do not reteach\n- Do not re-teach the entire fractions unit.\n- Do not open with a long curriculum overview.\n\n## Scenes\n### 1. See the size (~25s)\n- Narration: We compare equivalent fractions with a picture.\n- Visual: Fraction bars / number line intro\n\n### 2. Build the diagram (~60s)\n- Narration: Watch the bars grow correctly.\n- Visual: Animated bars matching the example\n\n### 3. Misconception contrast (~40s)\n- Narration: Picture shows why this fails: Thinks a bigger denominator means a bigger fraction\n- Visual: Wrong bar vs right bar\n\n### 4. Read the diagram (~30s)\n- Narration: Answer from the picture alone.\n- Visual: Silent diagram + prompt\n\n### 5. Exit check (~20s)\n- Narration: One check without the old wrong habit.\n- Visual: MCQ overlay\n\n## Generation controls\n```json\n{\n  \"scope\": \"single_gap\",\n  \"teaching_method\": \"visual\",\n  \"misconception_id\": \"bigger_denominator_bigger\",\n  \"duration_cap_minutes\": 2.5,\n  \"narration_density\": \"low\",\n  \"visual_schema\": \"fraction_bars\",\n  \"include_misconception_contrast\": true,\n  \"include_exit_check\": true\n}\n```"
+    }
+  ]
+}

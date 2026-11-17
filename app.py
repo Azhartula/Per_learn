@@ -24,6 +24,14 @@ from pll.parent_summary import METHOD_PLAIN  # noqa: E402
 from pll.prompts import SKILL_LABELS  # noqa: E402
 from pll.questions import Question, QuestionBank  # noqa: E402
 from pll.sympy_check import verify_answer  # noqa: E402
+from pll.video_brief import (  # noqa: E402
+    build_generic_brief,
+    build_specialised_brief,
+    render_brief_markdown,
+)
+
+RESULTS_STEPS = ("their_stack", "evaluate", "brief", "board")
+BUYER_PACK = ROOT / "outputs" / "buyer_demo" / "results.json"
 
 BIN_NAMES = ("just starting", "building up", "getting strong")
 STEPS = [
@@ -110,9 +118,12 @@ st.markdown(
 
 def _init_state() -> None:
     defaults = {
-        "mode": "landing",  # landing | pitch | demo
+        "mode": "landing",  # landing | pitch | demo | results
         "pitch_i": 0,
         "phase": "home",
+        "results_step": "their_stack",
+        "results_snapshot": None,  # baked eval for meetings
+        "results_brief": None,
         "name": "Guest",
         "profile": None,
         "bank": None,
@@ -240,6 +251,14 @@ def _sidebar() -> None:
         st.session_state.mode = "demo"
         st.session_state.phase = "home"
         st.rerun()
+    if st.sidebar.button(
+        "📊 Results for AI video schools",
+        use_container_width=True,
+        disabled=mode == "results",
+    ):
+        st.session_state.mode = "results"
+        st.session_state.results_step = "their_stack"
+        st.rerun()
 
     st.sidebar.markdown("---")
     st.session_state.name = (
@@ -282,6 +301,7 @@ def _sidebar() -> None:
             "fast_demo": st.session_state.fast_demo,
             "mode": st.session_state.mode,
             "pitch_i": st.session_state.pitch_i,
+            "results_step": "their_stack",
         }
         for k in list(st.session_state.keys()):
             del st.session_state[k]
@@ -298,39 +318,49 @@ def _sidebar() -> None:
 def page_landing() -> None:
     _chip("Pitch-ready demo")
     st.title("PerLearn")
-    st.subheader("Most edtech adapts *what* to learn. We adapt *how* to teach.")
+    st.subheader("You generate AI learning videos. We learn *which ones stick* for each student.")
 
     _card(
         "<strong>One sentence for the room</strong><br/>"
-        "We measure which teaching style actually sticks for this learner — "
-        "then we change it as they get stronger. Not a learning-styles quiz. Not a fixed path."
+        "Homeschool / AI-school platforms already generate video content. "
+        "PerLearn evaluates the student over time — weak spots, strong spots, "
+        "which explanation styles land — and feeds that back so personalization gets sharper."
     )
 
     st.markdown("### How do you want to run this meeting?")
-    c1, c2 = st.columns(2)
+    c1, c2, c3 = st.columns(3)
     with c1:
         _card(
-            "<strong>🎯 Company pitch</strong><br/>"
-            "7 slides · problem → proof → partnership ask<br/>"
-            "<span style='opacity:0.8'>Best when you’re presenting to a table.</span>"
+            "<strong>📊 Results demo</strong><br/>"
+            "Their stack → eval → short video brief → cost board<br/>"
+            "<span style='opacity:0.8'>Best for AI video school buyers.</span>"
         )
-        if st.button("Start company pitch →", type="primary", use_container_width=True):
-            st.session_state.mode = "pitch"
-            st.session_state.pitch_i = 0
+        if st.button("Show results demo →", type="primary", use_container_width=True):
+            st.session_state.mode = "results"
+            st.session_state.results_step = "their_stack"
             st.rerun()
     with c2:
         _card(
-            "<strong>🧪 Live 5-minute try</strong><br/>"
-            "They take a short quiz → get a lesson → see adaptation<br/>"
-            "<span style='opacity:0.8'>Best when you want them to feel it.</span>"
+            "<strong>🎯 Company pitch</strong><br/>"
+            "7 slides · problem → proof → ask<br/>"
+            "<span style='opacity:0.8'>Narrative for the table.</span>"
+        )
+        if st.button("Start company pitch →", use_container_width=True):
+            st.session_state.mode = "pitch"
+            st.session_state.pitch_i = 0
+            st.rerun()
+    with c3:
+        _card(
+            "<strong>🧪 Live 5-min try</strong><br/>"
+            "Quiz → lesson → adaptation<br/>"
+            "<span style='opacity:0.8'>Optional feel-it path.</span>"
         )
         if st.button("Start live demo →", use_container_width=True):
             st.session_state.mode = "demo"
             st.session_state.phase = "home"
             st.rerun()
 
-    st.caption("Tip: open Company pitch first, then jump to Live try from the last slide.")
-
+    st.caption("Default for partners: Results demo first (under 10 minutes).")
 
 # ── Company pitch slides ─────────────────────────────────────────────────────
 
@@ -369,47 +399,49 @@ def page_pitch() -> None:
 
 def _pitch_hook() -> None:
     _chip("Slide 1 · Hook")
-    st.header("Two kids. Same app. Same wrong answers.")
+    st.header("You already generate AI learning videos.")
     st.markdown(
-        '<p class="quote">One needs a worked example. The other needs to struggle first. '
-        "Your product teaches both the same way.</p>",
+        '<p class="quote">Long generic videos are expensive to render and easy for kids to tune out. '
+        "Short videos aimed at <strong>this</strong> child’s gap cost less — and teach more.</p>",
         unsafe_allow_html=True,
     )
     _card(
-        "Adaptive learning today is great at picking the <strong>next topic</strong>.<br/>"
-        "It almost never picks the <strong>teaching method</strong> — and never re-checks whether "
-        "that method still works as the child grows."
+        "<strong>Their system today</strong><br/>"
+        "AI school / homeschool platform → generate video → student watches → quiz → next topic.<br/><br/>"
+        "<strong>What’s missing</strong><br/>"
+        "Which explanation style actually stuck? Without that, you regenerate broad lessons "
+        "instead of sharp, personal ones."
     )
-    st.info("That’s the gap PerLearn fills. A method layer on top of any content engine.")
+    st.info("PerLearn evaluates the student, finds the pattern, and tells your generator what to make next — shorter and more specialised.")
 
 
 def _pitch_problem() -> None:
-    _chip("Slide 2 · The market problem")
-    st.header("Why “personalised” still feels generic")
+    _chip("Slide 2 · The cost + learning problem")
+    st.header("Generic video burns GPU budget and attention")
 
     a, b = st.columns(2)
     with a:
         _card(
-            "<strong>What buyers are sold</strong><br/>"
-            "• Adaptive difficulty<br/>"
-            "• Next-item recommenders<br/>"
-            "• Learning-style quizzes<br/>"
-            "• More content, same pedagogy",
+            "<strong>Without evaluation feedback</strong><br/>"
+            "• Long one-size videos for every kid<br/>"
+            "• Re-teach whole topics they partly know<br/>"
+            "• Regenerations when quiz fails — same style<br/>"
+            "• Rising render cost per learner",
             "vs-bad",
         )
     with b:
         _card(
-            "<strong>What classrooms still feel</strong><br/>"
-            "• Kids plateau on the same concept<br/>"
-            "• Tutors guess the explanation style<br/>"
-            "• Practice scores look fine — tests don’t<br/>"
-            "• One path for beginners and near-masters",
-            "vs-bad",
+            "<strong>With personal-level understanding</strong><br/>"
+            "• Know the weak spot + mix-up<br/>"
+            "• Generate a short video for that gap<br/>"
+            "• Pick the style that worked for them<br/>"
+            "• Fewer minutes rendered, higher mastery",
+            "vs-good",
         )
 
     st.warning(
-        "Learning-styles labels are a neuromyth. We don’t ask “are you visual?” — "
-        "we measure what produces delayed mastery."
+        "Personalization here is not a learning-styles quiz. "
+        "It’s measured: evaluate → see what sticks → refine the next render."
     )
 
 
@@ -520,21 +552,23 @@ def _pitch_ask() -> None:
     _chip("Slide 7 · The ask")
     st.header("What we’re looking for")
     _card(
-        "<strong>Pilot partnership (90 days)</strong><br/>"
-        "1 skill area · your learners · we run the method loop · you keep the outcome data.<br/><br/>"
-        "<strong>Success looks like</strong><br/>"
-        "Faster delayed mastery vs your current fixed pedagogy — and a clear “style switched” story "
-        "teachers / parents can understand."
+        "<strong>Plug into your AI video school (90 days)</strong><br/>"
+        "You keep generation, curriculum, and parents. We sit after the quiz: "
+        "evaluate → pattern (weak/strong + style that works) → instruct the next "
+        "<em>short, specialised</em> video.<br/><br/>"
+        "<strong>Buyer outcomes</strong><br/>"
+        "• Lower render cost per mastered skill (minutes generated ↓)<br/>"
+        "• Higher delayed mastery vs long generic videos<br/>"
+        "• Clear log: which style worked for this child<br/><br/>"
+        "<strong>Proof we bring</strong><br/>"
+        "Offline eval + Qwen agent cohort on the same loop — then your live traffic."
     )
-    st.markdown("### In the room right now")
+    st.markdown("### Line for the room")
     st.markdown(
-        """
-1. Walk the **live 5-minute try** (next button)  
-2. Show **before → after teaching style** on the final screen  
-3. Leave them with: *we don’t guess learning styles — we measure what sticks*  
-        """
+        "*You generate AI videos. We make sure the next one is personal — "
+        "so you render less, and students learn more.*"
     )
-    st.success("Ready? Hit **Try the live demo →** and let them take the quiz themselves.")
+    st.success("Next → live try if useful.")
 
 
 # ── Live demo ────────────────────────────────────────────────────────────────
@@ -1036,6 +1070,274 @@ def page_demo() -> None:
     }.get(st.session_state.phase, phase_home)()
 
 
+# ── Results demo (AI video schools) ──────────────────────────────────────────
+
+
+def _load_buyer_pack() -> dict:
+    if BUYER_PACK.exists():
+        return json.loads(BUYER_PACK.read_text(encoding="utf-8"))
+    return {}
+
+
+def _results_nav(back_step: str | None, next_step: str | None, next_label: str = "Next →") -> None:
+    c1, c2 = st.columns(2)
+    with c1:
+        if back_step is None:
+            if st.button("← Landing", use_container_width=True):
+                st.session_state.mode = "landing"
+                st.rerun()
+        else:
+            if st.button("← Back", use_container_width=True):
+                st.session_state.results_step = back_step
+                st.rerun()
+    with c2:
+        if next_step and st.button(next_label, type="primary", use_container_width=True):
+            st.session_state.results_step = next_step
+            st.rerun()
+
+
+def _results_progress() -> None:
+    step = st.session_state.results_step
+    labels = {
+        "their_stack": "1 · Their system",
+        "evaluate": "2 · Evaluate",
+        "brief": "3 · Short video brief",
+        "board": "4 · Results board",
+    }
+    idx = RESULTS_STEPS.index(step) if step in RESULTS_STEPS else 0
+    st.progress((idx + 1) / len(RESULTS_STEPS), text=labels.get(step, step))
+
+
+def _baked_snapshot() -> dict:
+    """Fast meeting path: pre-baked learner evaluation (no live quiz required)."""
+    return {
+        "learner": "Maya (meeting snapshot)",
+        "quiz_score": "1/3",
+        "weak_skill": "ordering_fractions",
+        "weak_label": SKILL_LABELS["ordering_fractions"],
+        "misconception_id": "ignore_denominator",
+        "misconception_label": "Compares only numerators when denominators differ",
+        "method": "visual",
+        "strengths": ["equivalent_fractions basics"],
+        "delayed_score": 0.67,
+        "source": "baked_snapshot",
+    }
+
+
+def results_their_stack() -> None:
+    _chip("Results demo · Screen A")
+    st.header("Start with their system")
+    st.markdown(
+        '<p class="quote">AI video school / homeschool: generate video → watch → quiz → next topic.</p>',
+        unsafe_allow_html=True,
+    )
+    generic = build_generic_brief("ordering_fractions")
+    a, b = st.columns(2)
+    with a:
+        _card(
+            "<strong>What they already do</strong><br/>"
+            "1. Generate an AI learning video<br/>"
+            "2. Student watches<br/>"
+            "3. Quiz / exit ticket<br/>"
+            "4. Pick the next topic<br/><br/>"
+            "Personalization today = <em>what</em> next, not <em>how</em> to explain.",
+            "vs-bad",
+        )
+    with b:
+        _card(
+            f"<strong>Long generic brief (baseline)</strong><br/>"
+            f"Title: {generic.title}<br/>"
+            f"Estimated render: <strong>{generic.estimated_minutes_generic:.0f} min</strong><br/>"
+            f"Scope: full topic — reteaches everything when a quiz fails.",
+            "vs-bad",
+        )
+
+    pack = _load_buyer_pack()
+    if pack:
+        cost = pack.get("cost_proxy") or {}
+        st.info(
+            f"Precomputed cohort pack ready: if {pack.get('n_learners', 16)} learners each got a "
+            f"long re-teach → **{cost.get('generic_minutes_if_full_topic_each', 0):.0f} min** rendered. "
+            f"Specialised briefs → **{cost.get('specialised_minutes_sum', 0):.0f} min** "
+            f"(proxy save **{cost.get('minutes_saved_proxy', 0):.0f} min**)."
+        )
+    st.caption("Cost figures are duration proxies, not their GPU invoice.")
+    _results_nav(None, "evaluate", "Insert PerLearn evaluate →")
+
+
+def results_evaluate() -> None:
+    _chip("Results demo · Screen B")
+    st.header("Evaluate the student")
+    st.markdown(
+        "Find the gap before regenerating another long video. "
+        "Use a meeting snapshot (fast) or jump to the live quiz later."
+    )
+
+    if st.button("Use meeting snapshot (recommended)", type="primary", use_container_width=True):
+        snap = _baked_snapshot()
+        st.session_state.results_snapshot = snap
+        brief = build_specialised_brief(
+            skill=snap["weak_skill"],
+            method=snap["method"],
+            misconception_id=snap["misconception_id"],
+            misconception_label=snap["misconception_label"],
+            known_strengths=snap["strengths"],
+        )
+        st.session_state.results_brief = brief
+        st.session_state.results_step = "brief"
+        st.rerun()
+
+    snap = st.session_state.results_snapshot
+    if snap:
+        a, b, c = st.columns(3)
+        a.metric("Quiz", snap["quiz_score"])
+        b.metric("Weak spot", snap["weak_label"])
+        c.metric("Style chosen", _short_method(snap["method"]))
+        _card(
+            f"<strong>Likely mix-up:</strong> {snap['misconception_label']}<br/>"
+            f"<strong>Do not reteach:</strong> {', '.join(snap['strengths'])}"
+        )
+        _results_nav("their_stack", "brief", "Build short video brief →")
+    else:
+        st.caption("Or open Live 5-min try from the sidebar after this meeting path.")
+        _results_nav("their_stack", None)
+
+
+def results_brief() -> None:
+    _chip("Results demo · Screen C")
+    st.header("Specialised short video brief")
+    snap = st.session_state.results_snapshot or _baked_snapshot()
+    brief = st.session_state.results_brief
+    if brief is None:
+        brief = build_specialised_brief(
+            skill=snap["weak_skill"],
+            method=snap["method"],
+            misconception_id=snap["misconception_id"],
+            misconception_label=snap["misconception_label"],
+            known_strengths=snap.get("strengths"),
+        )
+        st.session_state.results_brief = brief
+
+    generic = build_generic_brief(snap["weak_skill"])
+    x, y = st.columns(2)
+    with x:
+        _card(
+            f"<strong>Generic path</strong><br/>"
+            f"{generic.estimated_minutes_generic:.0f} min full-topic video<br/>"
+            f"Cost proxy: 1.00",
+            "vs-bad",
+        )
+    with y:
+        _card(
+            f"<strong>Specialised path</strong><br/>"
+            f"{brief.estimated_minutes_specialised:.1f} min · {_short_method(brief.method)}<br/>"
+            f"Cost proxy: {brief.cost_proxy:.2f} · saved {brief.minutes_saved:.1f} min",
+            "vs-good",
+        )
+
+    st.markdown(
+        '<p class="quote">Say this: their generator receives this brief — '
+        "not another 11-minute lecture.</p>",
+        unsafe_allow_html=True,
+    )
+    with st.expander("Video brief (for their generator)", expanded=True):
+        st.markdown(render_brief_markdown(brief))
+    with st.expander("JSON payload"):
+        st.json(brief.to_dict())
+
+    _results_nav("evaluate", "board", "Show results board →")
+
+
+def results_board() -> None:
+    _chip("Results demo · Screen D")
+    st.header("Results board")
+    snap = st.session_state.results_snapshot or _baked_snapshot()
+    brief = st.session_state.results_brief or build_specialised_brief(
+        skill=snap["weak_skill"],
+        method=snap["method"],
+        misconception_id=snap["misconception_id"],
+        misconception_label=snap["misconception_label"],
+    )
+    pack = _load_buyer_pack()
+
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Generic minutes", f"{brief.estimated_minutes_generic:.0f}")
+    m2.metric("Specialised minutes", f"{brief.estimated_minutes_specialised:.1f}")
+    m3.metric("Cost proxy", f"{brief.cost_proxy:.2f}")
+    m4.metric("Delayed check (snapshot)", f"{snap.get('delayed_score', 0):.0%}")
+
+    st.markdown("### Live case")
+    _card(
+        f"<strong>Weak spot:</strong> {snap['weak_label']}<br/>"
+        f"<strong>Style used:</strong> {_short_method(snap['method'])}<br/>"
+        f"<strong>Minutes saved (proxy):</strong> {brief.minutes_saved:.1f}<br/>"
+        f"<strong>Next video must hit:</strong> {snap['misconception_label']}"
+    )
+
+    if pack:
+        match = pack.get("method_match_vs_mismatch") or {}
+        cost = pack.get("cost_proxy") or {}
+        st.markdown("### Cohort pack (Qwen llm_agent — pipeline proof)")
+        a, b = st.columns(2)
+        with a:
+            _card(
+                f"<strong>Matched style bias</strong><br/>"
+                f"n={match.get('matched_n')} · mean delayed "
+                f"<strong>{(match.get('matched_mean_delayed') or 0):.0%}</strong>",
+                "vs-good",
+            )
+        with b:
+            _card(
+                f"<strong>Mismatched</strong><br/>"
+                f"n={match.get('mismatched_n')} · mean delayed "
+                f"<strong>{(match.get('mismatched_mean_delayed') or 0):.0%}</strong>",
+                "vs-bad",
+            )
+        st.success(
+            f"Cohort cost proxy: specialised/generic = "
+            f"**{cost.get('cost_ratio_specialised_over_generic', 0):.2f}** "
+            f"({cost.get('minutes_saved_proxy', 0):.0f} min saved across "
+            f"{pack.get('n_learners')} learners)."
+        )
+
+    st.warning(
+        "Honesty: cost proxy uses estimated minutes; their true $ uses their renderer. "
+        "Agent delayed scores are pipeline proof, not a child RCT."
+    )
+    st.markdown(
+        '<p class="quote"><strong>Ask:</strong> Plug this brief API into your generator for one skill '
+        "(90 days). Success = lower render minutes per mastered skill + clearer style logs.</p>",
+        unsafe_allow_html=True,
+    )
+
+    x, y, z = st.columns(3)
+    with x:
+        if st.button("← Back to brief", use_container_width=True):
+            st.session_state.results_step = "brief"
+            st.rerun()
+    with y:
+        if st.button("Restart results demo", use_container_width=True):
+            st.session_state.results_step = "their_stack"
+            st.session_state.results_snapshot = None
+            st.session_state.results_brief = None
+            st.rerun()
+    with z:
+        if st.button("Open live try", type="primary", use_container_width=True):
+            st.session_state.mode = "demo"
+            st.session_state.phase = "home"
+            st.rerun()
+
+
+def page_results() -> None:
+    _results_progress()
+    {
+        "their_stack": results_their_stack,
+        "evaluate": results_evaluate,
+        "brief": results_brief,
+        "board": results_board,
+    }.get(st.session_state.results_step, results_their_stack)()
+
+
 def main() -> None:
     _init_state()
     if st.session_state.profile is None:
@@ -1047,6 +1349,8 @@ def main() -> None:
         page_pitch()
     elif mode == "demo":
         page_demo()
+    elif mode == "results":
+        page_results()
     else:
         page_landing()
 

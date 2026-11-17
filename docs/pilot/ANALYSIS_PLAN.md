@@ -1,15 +1,23 @@
-# Pilot analysis plan (pre-registered style)
+# Evaluation analysis plan (AI platform proof)
 
-**Primary outcome:** delayed (24–72h) accuracy on unseen Form C items for the focus skill.
+**Primary outcome:** delayed-check accuracy (`delayed_24h` / Form C) after a teaching-method assignment.
+
+**Primary cohort for pitching:** Qwen learner agents (`respondent=llm_agent`, N≈12–20 personas).
 
 **Arms:**
-- `adaptive_method` — contextual bandit chooses teaching method
+- `adaptive_method` — bandit chooses teaching method
 - `fixed_worked_example` — always worked-example first
 
-**Secondary:** method switches across sessions, time-on-task (latency_ms), immediate_post accuracy, integrity fail rate.
+**Secondary:**
+- method match vs persona style bias (matched delayed score vs mismatched)
+- immediate_post accuracy
+- integrity fail rate (`lesson_ok`)
+- latency / cost per session
 
-**Sample:** N ≈ 12–20 consented adults/teens (protocol reusable for schools later). Not powered for small effects — estimate with CIs and report honestly.
+**Exclusion:** sessions with `lesson_ok=false` or incomplete delayed form.
 
-**Exclusion:** sessions with `lesson_ok=false`, incomplete Session 2, or respondent ≠ human (except labeled dry-runs).
+**How to talk about it**
 
-**Analysis:** mean delayed accuracy by arm ± 95% bootstrap CI; no claim of child efficacy until a school pilot.
+- Lead with: “Our AI learners run the same loop your product would — we measure whether the teaching style stuck, then adapt.”
+- Do **not** lead with: “We need to recruit 12–20 people first.”
+- Human partner traffic is an optional deployment validation, not the product thesis.
