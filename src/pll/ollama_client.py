@@ -10,7 +10,7 @@ from typing import Any
 
 
 DEFAULT_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
-DEFAULT_MODEL = os.environ.get("PLL_OLLAMA_MODEL", "qwen2.5:3b")
+DEFAULT_MODEL = os.environ.get("PLL_OLLAMA_MODEL", "qwen2.5:7b")
 
 
 class OllamaError(RuntimeError):

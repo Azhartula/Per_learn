@@ -1,27 +1,23 @@
-# Ordering and comparing fractions correctly
+# Ordering and Comparing Fractions
 
-**Method:** worked_example  
+**Method:** visual  
 **Skill:** ordering_fractions  
 **Misconception targeted:** Thinks a bigger denominator means a bigger fraction  
 **Source:** ollama  
-**Model:** qwen2.5:3b  
+**Model:** qwen2.5:7b  
 **All answers SymPy-verified:** yes  
 
-## Hook
-Let's look at a clear example to understand how to compare fractions.
+## Visual
+```
+Fraction Bar: 1/3 |-----|-----|-----| 1/2 |-----|-----|-----| 3/7 |-----|-----|-----|-----|-----|-----|
+```
+Fraction bars show 1/3, 1/2, and 3/7. Notice how 3/7 is closer to 1 than 1/2, despite having a larger denominator.
 
-## Worked example
-Order the fractions 1/3 and 2/5 from smallest to largest.
-
-1. Find a common denominator for 1/3 and 2/5. The least common multiple of 3 and 5 is 15.
-2. Convert 1/3 to a fraction with a denominator of 15: 1/3 = 5/15.
-3. Convert 2/5 to a fraction with a denominator of 15: 2/5 = 6/15.
-4. Now compare 5/15 and 6/15. Since 5 < 6, 1/3 < 2/5.
-5. Therefore, the order from smallest to largest is 1/3, 2/5.
-**Answer:** 1/3, 2/5
+## Explanation
+Fraction bars help us see the size of fractions. A bigger denominator doesn't always mean a bigger fraction. It just means the fraction is divided into more parts.
 
 ## Misconception check
-Remember, a bigger denominator does not mean the fraction is bigger. The size of the fraction depends on both the numerator and the denominator.
+A bigger denominator means the parts are smaller, so the fraction might be smaller.
 
 ## Practice
 - (ord_03) Which is greater: 2/5 or 3/7? → `3/7` [✓]
@@ -29,5 +25,5 @@ Remember, a bigger denominator does not mean the fraction is bigger. The size of
 - (ord_07) Which fraction is closest to 1: 3/4, 2/3, or 1/2? → `3/4` [✓]
 
 ## Exit ticket
-Order the fractions 1/4 and 3/8 from smallest to largest.
-**Answer:** 1/4, 3/8
+Which is greater: 1/3 or 2/7?
+**Answer:** 1/3

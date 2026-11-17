@@ -10,10 +10,10 @@
 ## Real GPU path
 ```bash
 ollama serve
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 PYTHONPATH=src python scripts/run_live_gpu.py --skill ordering_fractions --mastery 0.25
 ```
-Model: Qwen 2.5 3B via Ollama on RTX 3060. Answers SymPy-gated.
+Model: Qwen 2.5 7B via Ollama on RTX 3060. Answers SymPy-gated.
 
 ## Rules
 - Never add Cursor/AI as git co-author (use `git commit-tree` if injected).

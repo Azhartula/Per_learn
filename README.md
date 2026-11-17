@@ -87,10 +87,10 @@ Requires [Ollama](https://ollama.com) + a light model on your GPU (RTX 3060 work
 
 ```bash
 ollama serve          # if not already running
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 PYTHONPATH=src python scripts/run_live_gpu.py --skill ordering_fractions --mastery 0.25
 # or full loop with local model:
-PYTHONPATH=src python scripts/run_phase3.py --mode demo --ollama --model qwen2.5:3b
+PYTHONPATH=src python scripts/run_phase3.py --mode demo --ollama --model qwen2.5:7b
 ```
 
 Static files live in `docs/` for GitHub Pages:

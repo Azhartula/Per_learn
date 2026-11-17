@@ -252,7 +252,7 @@ def generate_lesson(
                 "Start it with: ollama serve"
             )
         try:
-            model_name = ollama_model or os.environ.get("PLL_OLLAMA_MODEL", "qwen2.5:3b")
+            model_name = ollama_model or os.environ.get("PLL_OLLAMA_MODEL", "qwen2.5:7b")
             body = chat_json(prompt, model=model_name)
             body["practice"] = _lock_practice_answers(body, practice)
             body.setdefault("method", method)

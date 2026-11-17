@@ -25,45 +25,41 @@
     </header>
     <section class="section" style="padding-top:0.4rem;">
       <div class="eyebrow">Real local GPU run</div>
-      <h2>Lesson written by Qwen 2.5 3B on this laptop</h2>
+      <h2>Lesson written by Qwen 2.5 7B on this laptop</h2>
       <p class="lede">Bandit chose the method from mastery context. Ollama generated the lesson on the RTX 3060. SymPy verified every practice answer before display.</p>
       <pre class="meta">{
-  "elapsed_sec": 66.16,
-  "model": "qwen2.5:3b",
-  "method": "worked_example",
+  "elapsed_sec": 40.76,
+  "model": "qwen2.5:7b",
+  "method": "visual",
   "mastery": 0.25,
   "skill": "ordering_fractions",
   "source": "ollama",
   "all_verified": true,
-  "gpu_before": "NVIDIA GeForce RTX 3060 Laptop GPU, 740 MiB, 23 %",
-  "gpu_after": "NVIDIA GeForce RTX 3060 Laptop GPU, 3171 MiB, 44 %",
-  "title": "Ordering and comparing fractions correctly"
+  "gpu_before": "NVIDIA GeForce RTX 3060 Laptop GPU, 710 MiB, 38 %",
+  "gpu_after": "NVIDIA GeForce RTX 3060 Laptop GPU, 5264 MiB, 49 %",
+  "title": "Ordering and Comparing Fractions"
 }</pre>
       <div class="panel" style="margin-top:1rem;">
-        <article class="lesson"># Ordering and comparing fractions correctly
+        <article class="lesson"># Ordering and Comparing Fractions
 
-**Method:** worked_example  
+**Method:** visual  
 **Skill:** ordering_fractions  
 **Misconception targeted:** Thinks a bigger denominator means a bigger fraction  
 **Source:** ollama  
-**Model:** qwen2.5:3b  
+**Model:** qwen2.5:7b  
 **All answers SymPy-verified:** yes  
 
-## Hook
-Let's look at a clear example to understand how to compare fractions.
+## Visual
+```
+Fraction Bar: 1/3 |-----|-----|-----| 1/2 |-----|-----|-----| 3/7 |-----|-----|-----|-----|-----|-----|
+```
+Fraction bars show 1/3, 1/2, and 3/7. Notice how 3/7 is closer to 1 than 1/2, despite having a larger denominator.
 
-## Worked example
-Order the fractions 1/3 and 2/5 from smallest to largest.
-
-1. Find a common denominator for 1/3 and 2/5. The least common multiple of 3 and 5 is 15.
-2. Convert 1/3 to a fraction with a denominator of 15: 1/3 = 5/15.
-3. Convert 2/5 to a fraction with a denominator of 15: 2/5 = 6/15.
-4. Now compare 5/15 and 6/15. Since 5 &lt; 6, 1/3 &lt; 2/5.
-5. Therefore, the order from smallest to largest is 1/3, 2/5.
-**Answer:** 1/3, 2/5
+## Explanation
+Fraction bars help us see the size of fractions. A bigger denominator doesn't always mean a bigger fraction. It just means the fraction is divided into more parts.
 
 ## Misconception check
-Remember, a bigger denominator does not mean the fraction is bigger. The size of the fraction depends on both the numerator and the denominator.
+A bigger denominator means the parts are smaller, so the fraction might be smaller.
 
 ## Practice
 - (ord_03) Which is greater: 2/5 or 3/7? → `3/7` [✓]
@@ -71,8 +67,8 @@ Remember, a bigger denominator does not mean the fraction is bigger. The size of
 - (ord_07) Which fraction is closest to 1: 3/4, 2/3, or 1/2? → `3/4` [✓]
 
 ## Exit ticket
-Order the fractions 1/4 and 3/8 from smallest to largest.
-**Answer:** 1/4, 3/8</article>
+Which is greater: 1/3 or 2/7?
+**Answer:** 1/3</article>
       </div>
     </section>
   </div>
