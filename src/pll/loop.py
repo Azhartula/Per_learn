@@ -148,6 +148,8 @@ def run_session(
     n_diagnostic: int = 8,
     seed: int = 42,
     use_llm: bool = False,
+    use_ollama: bool = False,
+    ollama_model: str | None = None,
     bank: QuestionBank | None = None,
     bandit: DiscountedContextualTS | None = None,
 ) -> SessionResult:
@@ -195,6 +197,8 @@ def run_session(
         misconception_id=misconception_id,
         bank=bank,
         use_llm=use_llm,
+        use_ollama=use_ollama,
+        ollama_model=ollama_model,
     )
 
     used = {t.question_id for t in diagnostic.trials}

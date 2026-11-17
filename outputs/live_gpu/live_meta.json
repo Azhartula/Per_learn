@@ -1,0 +1,12 @@
+{
+  "elapsed_sec": 66.16,
+  "model": "qwen2.5:3b",
+  "method": "worked_example",
+  "mastery": 0.25,
+  "skill": "ordering_fractions",
+  "source": "ollama",
+  "all_verified": true,
+  "gpu_before": "NVIDIA GeForce RTX 3060 Laptop GPU, 740 MiB, 23 %",
+  "gpu_after": "NVIDIA GeForce RTX 3060 Laptop GPU, 3171 MiB, 44 %",
+  "title": "Ordering and comparing fractions correctly"
+}

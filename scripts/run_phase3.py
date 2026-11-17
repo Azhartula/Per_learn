@@ -26,7 +26,9 @@ def main() -> None:
     )
     parser.add_argument("--items", type=int, default=8, help="Diagnostic length")
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--llm", action="store_true")
+    parser.add_argument("--llm", action="store_true", help="Cloud OpenAI-compatible API")
+    parser.add_argument("--ollama", action="store_true", help="Local Ollama GPU/CPU model")
+    parser.add_argument("--model", default="qwen2.5:3b", help="Ollama model tag")
     parser.add_argument("--out-dir", default=str(ROOT / "outputs" / "sessions"))
     args = parser.parse_args()
 
@@ -41,6 +43,8 @@ def main() -> None:
         n_diagnostic=args.items,
         seed=args.seed,
         use_llm=args.llm,
+        use_ollama=args.ollama,
+        ollama_model=args.model,
     )
 
     print("\n--- Diagnostic ---")

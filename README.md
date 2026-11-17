@@ -81,9 +81,22 @@ PYTHONPATH=src python scripts/serve_demo.py
 # → http://127.0.0.1:8765/child.html
 ```
 
+### Real local GPU lesson (Ollama)
+
+Requires [Ollama](https://ollama.com) + a light model on your GPU (RTX 3060 works):
+
+```bash
+ollama serve          # if not already running
+ollama pull qwen2.5:3b
+PYTHONPATH=src python scripts/run_live_gpu.py --skill ordering_fractions --mastery 0.25
+# or full loop with local model:
+PYTHONPATH=src python scripts/run_phase3.py --mode demo --ollama --model qwen2.5:3b
+```
+
 Static files live in `docs/` for GitHub Pages:
 
 - Pitch: https://azhartula.github.io/Per_learn/
 - **Watch a child adapt:** https://azhartula.github.io/Per_learn/child.html
+- **Real GPU lesson sample:** https://azhartula.github.io/Per_learn/live.html
 - One-session snapshot: https://azhartula.github.io/Per_learn/parent.html
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live GPU lesson — PerLearn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    pre.meta { background:#12201a; color:#d7e6dd; padding:1rem 1.1rem; border-radius:1rem; overflow:auto; }
+    article.lesson { white-space: pre-wrap; line-height:1.55; font-size:1.02rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <p class="brand">Per<span>Learn</span></p>
+      <div class="nav-links">
+        <a href="index.html">Pitch</a>
+        <a href="child.html">Child demo</a>
+        <a class="btn btn-ghost" href="index.html">Back</a>
+      </div>
+    </header>
+    <section class="section" style="padding-top:0.4rem;">
+      <div class="eyebrow">Real local GPU run</div>
+      <h2>Lesson written by Qwen 2.5 3B on this laptop</h2>
+      <p class="lede">Bandit chose the method from mastery context. Ollama generated the lesson on the RTX 3060. SymPy verified every practice answer before display.</p>
+      <pre class="meta">{
+  "elapsed_sec": 66.16,
+  "model": "qwen2.5:3b",
+  "method": "worked_example",
+  "mastery": 0.25,
+  "skill": "ordering_fractions",
+  "source": "ollama",
+  "all_verified": true,
+  "gpu_before": "NVIDIA GeForce RTX 3060 Laptop GPU, 740 MiB, 23 %",
+  "gpu_after": "NVIDIA GeForce RTX 3060 Laptop GPU, 3171 MiB, 44 %",
+  "title": "Ordering and comparing fractions correctly"
+}</pre>
+      <div class="panel" style="margin-top:1rem;">
+        <article class="lesson"># Ordering and comparing fractions correctly
+
+**Method:** worked_example  
+**Skill:** ordering_fractions  
+**Misconception targeted:** Thinks a bigger denominator means a bigger fraction  
+**Source:** ollama  
+**Model:** qwen2.5:3b  
+**All answers SymPy-verified:** yes  
+
+## Hook
+Let's look at a clear example to understand how to compare fractions.
+
+## Worked example
+Order the fractions 1/3 and 2/5 from smallest to largest.
+
+1. Find a common denominator for 1/3 and 2/5. The least common multiple of 3 and 5 is 15.
+2. Convert 1/3 to a fraction with a denominator of 15: 1/3 = 5/15.
+3. Convert 2/5 to a fraction with a denominator of 15: 2/5 = 6/15.
+4. Now compare 5/15 and 6/15. Since 5 &lt; 6, 1/3 &lt; 2/5.
+5. Therefore, the order from smallest to largest is 1/3, 2/5.
+**Answer:** 1/3, 2/5
+
+## Misconception check
+Remember, a bigger denominator does not mean the fraction is bigger. The size of the fraction depends on both the numerator and the denominator.
+
+## Practice
+- (ord_03) Which is greater: 2/5 or 3/7? → `3/7` [✓]
+- (ord_05) True or false: 2/6 is greater than 2/4. → `false` [✓]
+- (ord_07) Which fraction is closest to 1: 3/4, 2/3, or 1/2? → `3/4` [✓]
+
+## Exit ticket
+Order the fractions 1/4 and 3/8 from smallest to largest.
+**Answer:** 1/4, 3/8</article>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

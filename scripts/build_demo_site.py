@@ -72,9 +72,19 @@ def main() -> None:
         "parent.js",
         "child.html",
         "child.js",
+        "live.html",
         "styles.css",
     ):
-        shutil.copy2(web / name, docs / name)
+        src = web / name
+        if src.exists():
+            shutil.copy2(src, docs / name)
+
+    live_gpu = ROOT / "outputs" / "live_gpu"
+    if (live_gpu / "live_meta.json").exists():
+        shutil.copy2(live_gpu / "live_meta.json", assets / "live_meta.json")
+    for md in live_gpu.glob("*__live.md"):
+        shutil.copy2(md, assets / "live_gpu_lesson.md")
+        break
 
     shutil.copy2(chart, assets / "phase1_time_to_mastery.png")
     session = json.loads(session_path.read_text(encoding="utf-8"))

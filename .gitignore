@@ -16,6 +16,11 @@ outputs/sessions/session_*
 # Keep aggregated trajectory export; ignore one-offs if added later
 outputs/trajectories/*
 !outputs/trajectories/children.json
+# Keep one live GPU sample; ignore extras
+outputs/live_gpu/*
+!outputs/live_gpu/live_meta.json
+!outputs/live_gpu/*__live.md
+!outputs/live_gpu/*.json
 
 # Cursor: keep project rules only
 .cursor/*

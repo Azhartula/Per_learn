@@ -1,0 +1,117 @@
+{
+  "method": "worked_example",
+  "skill": "ordering_fractions",
+  "misconception_id": "bigger_denominator_bigger",
+  "misconception_label": "Thinks a bigger denominator means a bigger fraction",
+  "title": "Ordering and comparing fractions correctly",
+  "body": {
+    "title": "Ordering and comparing fractions correctly",
+    "method": "worked_example",
+    "hook": "Let's look at a clear example to understand how to compare fractions.",
+    "worked_example": {
+      "problem": "Order the fractions 1/3 and 2/5 from smallest to largest.",
+      "steps": [
+        "Find a common denominator for 1/3 and 2/5. The least common multiple of 3 and 5 is 15.",
+        "Convert 1/3 to a fraction with a denominator of 15: 1/3 = 5/15.",
+        "Convert 2/5 to a fraction with a denominator of 15: 2/5 = 6/15.",
+        "Now compare 5/15 and 6/15. Since 5 < 6, 1/3 < 2/5.",
+        "Therefore, the order from smallest to largest is 1/3, 2/5."
+      ],
+      "answer": "1/3, 2/5",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "misconception_check": "Remember, a bigger denominator does not mean the fraction is bigger. The size of the fraction depends on both the numerator and the denominator.",
+    "practice": [
+      {
+        "id": "ord_03",
+        "prompt": "Which is greater: 2/5 or 3/7?",
+        "answer": "3/7",
+        "answer_sympy": "3/7",
+        "model_answer": "3/7",
+        "choices": [
+          "2/5",
+          "3/7",
+          "equal"
+        ],
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "ord_05",
+        "prompt": "True or false: 2/6 is greater than 2/4.",
+        "answer": "false",
+        "answer_sympy": null,
+        "model_answer": "false",
+        "choices": null,
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      },
+      {
+        "id": "ord_07",
+        "prompt": "Which fraction is closest to 1: 3/4, 2/3, or 1/2?",
+        "answer": "3/4",
+        "answer_sympy": "3/4",
+        "model_answer": "3/4",
+        "choices": [
+          "3/4",
+          "2/3",
+          "1/2"
+        ],
+        "verified": true,
+        "verify_detail": "numeric/text match"
+      }
+    ],
+    "exit_ticket": {
+      "prompt": "Order the fractions 1/4 and 3/8 from smallest to largest.",
+      "answer": "1/4, 3/8",
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    "all_verified": true
+  },
+  "practice": [
+    {
+      "id": "ord_03",
+      "prompt": "Which is greater: 2/5 or 3/7?",
+      "answer": "3/7",
+      "answer_sympy": "3/7",
+      "model_answer": "3/7",
+      "choices": [
+        "2/5",
+        "3/7",
+        "equal"
+      ],
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "ord_05",
+      "prompt": "True or false: 2/6 is greater than 2/4.",
+      "answer": "false",
+      "answer_sympy": null,
+      "model_answer": "false",
+      "choices": null,
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    },
+    {
+      "id": "ord_07",
+      "prompt": "Which fraction is closest to 1: 3/4, 2/3, or 1/2?",
+      "answer": "3/4",
+      "answer_sympy": "3/4",
+      "model_answer": "3/4",
+      "choices": [
+        "3/4",
+        "2/3",
+        "1/2"
+      ],
+      "verified": true,
+      "verify_detail": "numeric/text match"
+    }
+  ],
+  "all_verified": true,
+  "source": "ollama",
+  "prompt": "You are a Year 5 maths tutor. Teach using WORKED EXAMPLE FIRST.\n\nSkill: ordering and comparing fractions\nActive misconception to address: Thinks a bigger denominator means a bigger fraction\nTeaching method: worked_example\n\nRules:\n- Show one fully worked example step by step BEFORE any practice.\n- Explicitly warn against this misconception: Thinks a bigger denominator means a bigger fraction\n- Then give 3 short practice questions.\n- You MUST use these exact correct answers (do not invent different answers):\n- example ord_01: 1/3\n- ord_03: 3/7\n- ord_05: false\n- ord_07: 3/4\n\nReturn JSON only with this shape:\n{\n  \"title\": \"...\",\n  \"method\": \"worked_example\",\n  \"hook\": \"one sentence\",\n  \"worked_example\": {\"problem\": \"...\", \"steps\": [\"...\"], \"answer\": \"...\"},\n  \"misconception_check\": \"one sentence correcting the misconception\",\n  \"practice\": [{\"id\": \"...\", \"prompt\": \"...\", \"answer\": \"...\"}],\n  \"exit_ticket\": {\"prompt\": \"...\", \"answer\": \"...\"}\n}\n\nPractice stems (use these; keep their answers exactly):\n- id=ord_03 | Which is greater: 2/5 or 3/7? | choices: 2/5, 3/7, equal | CORRECT_ANSWER=3/7\n- id=ord_05 | True or false: 2/6 is greater than 2/4. | CORRECT_ANSWER=false\n- id=ord_07 | Which fraction is closest to 1: 3/4, 2/3, or 1/2? | choices: 3/4, 2/3, 1/2 | CORRECT_ANSWER=3/4\n",
+  "model_name": "qwen2.5:3b"
+}

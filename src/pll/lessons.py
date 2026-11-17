@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 from urllib import error, request
 
+from pll.ollama_client import OllamaError, chat_json, is_reachable
 from pll.prompts import SKILL_LABELS, build_prompt
 from pll.questions import Question, QuestionBank, SKILL_ALIASES
 from pll.sympy_check import verify_answer
@@ -24,8 +25,9 @@ class Lesson:
     body: dict[str, Any]
     practice: list[dict[str, Any]]
     all_verified: bool
-    source: str  # "template" | "llm"
+    source: str  # "template" | "ollama" | "llm" | "template_fallback"
     prompt: str
+    model_name: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -192,13 +194,37 @@ def _call_openai_compatible(prompt: str, model: str, base_url: str, api_key: str
     return json.loads(content)
 
 
+def _lock_practice_answers(body: dict[str, Any], practice: list[Question]) -> list[dict[str, Any]]:
+    """Keep bank answers authoritative; record whatever the model proposed."""
+    model_practice = body.get("practice") or []
+    locked = []
+    for q in practice:
+        model_ans = next(
+            (p.get("answer") for p in model_practice if p.get("id") == q.id),
+            None,
+        )
+        locked.append(
+            {
+                "id": q.id,
+                "prompt": q.stem,
+                "answer": q.answer,
+                "answer_sympy": q.answer_sympy,
+                "model_answer": model_ans if model_ans is not None else q.answer,
+                "choices": list(q.choices) if q.choices else None,
+            }
+        )
+    return locked
+
+
 def generate_lesson(
     method: str,
     skill: str,
     misconception_id: str | None = None,
     bank: QuestionBank | None = None,
     use_llm: bool = False,
+    use_ollama: bool = False,
     n_practice: int = 3,
+    ollama_model: str | None = None,
 ) -> Lesson:
     bank = bank or QuestionBank.load()
     skill = SKILL_ALIASES.get(skill, skill)
@@ -218,38 +244,38 @@ def generate_lesson(
     prompt = build_prompt(method, skill, label, example, practice)
 
     source = "template"
-    if use_llm:
+    model_name = ""
+    if use_ollama:
+        if not is_reachable():
+            raise OllamaError(
+                "Ollama is not reachable at http://127.0.0.1:11434. "
+                "Start it with: ollama serve"
+            )
+        try:
+            model_name = ollama_model or os.environ.get("PLL_OLLAMA_MODEL", "qwen2.5:3b")
+            body = chat_json(prompt, model=model_name)
+            body["practice"] = _lock_practice_answers(body, practice)
+            body.setdefault("method", method)
+            body.setdefault("title", f"{SKILL_LABELS.get(skill, skill).title()} — {method}")
+            source = "ollama"
+        except (OllamaError, KeyError, TypeError) as exc:
+            body = _template_lesson(method, skill, misconception_id, label, example, practice)
+            body["llm_fallback_reason"] = str(exc)
+            source = "template_fallback"
+    elif use_llm:
         api_key = os.environ.get("PLL_API_KEY") or os.environ.get("OPENAI_API_KEY") or ""
         base_url = os.environ.get("PLL_BASE_URL", "https://api.openai.com/v1")
         model = os.environ.get("PLL_MODEL", "gpt-4o-mini")
         if not api_key:
             raise RuntimeError(
                 "use_llm=True but no PLL_API_KEY/OPENAI_API_KEY set. "
-                "Use template mode (default) or export a key."
+                "Prefer --ollama for local GPU, or export a key."
             )
         try:
             body = _call_openai_compatible(prompt, model, base_url, api_key)
-            # Force practice answers from the bank (safety layer).
-            bank_practice = [
-                {
-                    "id": q.id,
-                    "prompt": q.stem,
-                    "answer": q.answer,
-                    "answer_sympy": q.answer_sympy,
-                    "model_answer": next(
-                        (
-                            p.get("answer")
-                            for p in body.get("practice", [])
-                            if p.get("id") == q.id
-                        ),
-                        q.answer,
-                    ),
-                    "choices": list(q.choices) if q.choices else None,
-                }
-                for q in practice
-            ]
-            body["practice"] = bank_practice
+            body["practice"] = _lock_practice_answers(body, practice)
             source = "llm"
+            model_name = model
         except (error.URLError, error.HTTPError, TimeoutError, json.JSONDecodeError, KeyError) as exc:
             body = _template_lesson(method, skill, misconception_id, label, example, practice)
             body["llm_fallback_reason"] = str(exc)
@@ -269,6 +295,7 @@ def generate_lesson(
         all_verified=all_ok,
         source=source,
         prompt=prompt,
+        model_name=model_name,
     )
 
 
@@ -289,6 +316,7 @@ def render_lesson_markdown(lesson: Lesson) -> str:
         f"**Skill:** {lesson.skill}  ",
         f"**Misconception targeted:** {lesson.misconception_label}  ",
         f"**Source:** {lesson.source}  ",
+        f"**Model:** {lesson.model_name or 'n/a'}  ",
         f"**All answers SymPy-verified:** {'yes' if lesson.all_verified else 'NO'}  ",
         "",
     ]
