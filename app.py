@@ -1,4 +1,4 @@
-"""PerLearn — small Streamlit front end for the adaptive learn-with-me loop."""
+"""PerLearn Streamlit demo — clear pitch + guided MCQ learning session."""
 
 from __future__ import annotations
 
@@ -16,7 +16,6 @@ from pll.bandit import make_context, mastery_bin  # noqa: E402
 from pll.config import METHODS  # noqa: E402
 from pll.learner import (  # noqa: E402
     SessionRecord,
-    adaptation_summary,
     load_or_create,
     save_profile,
 )
@@ -25,20 +24,50 @@ from pll.mcq import McqQuestion, as_mcq  # noqa: E402
 from pll.ollama_client import is_reachable  # noqa: E402
 from pll.parent_summary import METHOD_PLAIN  # noqa: E402
 from pll.prompts import SKILL_LABELS  # noqa: E402
-from pll.questions import QuestionBank  # noqa: E402
+from pll.questions import Question, QuestionBank  # noqa: E402
 from pll.sympy_check import verify_answer  # noqa: E402
 
-BIN_NAMES = ("novice", "intermediate", "advanced")
+BIN_NAMES = ("just starting", "building up", "getting strong")
+STEPS = [
+    ("quiz", "1. Find the gap"),
+    ("bridge", "2. Choose how to teach"),
+    ("lesson", "3. Learn"),
+    ("practice", "4. Practice"),
+    ("check", "5. Check it stuck"),
+    ("done", "6. See what changed"),
+]
 
 
-st.set_page_config(page_title="PerLearn", page_icon="📗", layout="wide")
+st.set_page_config(page_title="PerLearn", page_icon="📗", layout="centered")
 
 st.markdown(
     """
     <style>
-      .block-container { max-width: 920px; padding-top: 1.4rem; }
-      h1, h2, h3 { font-family: Georgia, serif; letter-spacing: -0.02em; }
-      .stMetric { background: #eef5f0; border-radius: 12px; padding: 0.4rem 0.6rem; }
+      .block-container { max-width: 760px; padding-top: 1.2rem; padding-bottom: 3rem; }
+      h1, h2, h3 { font-family: Georgia, "Iowan Old Style", serif; letter-spacing: -0.02em; }
+      .idea-box {
+        background: linear-gradient(135deg, #eef6f1, #f7f4ee);
+        border: 1px solid #d5e4db;
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+        margin: 0.8rem 0 1.2rem;
+      }
+      .step-chip {
+        display: inline-block;
+        background: #e7f0ea;
+        color: #1b4d3a;
+        border-radius: 999px;
+        padding: 0.25rem 0.7rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+      }
+      .why-box {
+        border-left: 4px solid #1b7a5a;
+        padding: 0.35rem 0 0.35rem 0.9rem;
+        margin: 0.8rem 0 1rem;
+        color: #24352c;
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -47,16 +76,15 @@ st.markdown(
 
 def _init_state() -> None:
     defaults = {
-        "phase": "home",  # home | diagnostic | lesson | practice | delayed | done
+        "phase": "home",
         "name": "Azhar",
         "profile": None,
         "bank": None,
-        "diag_questions": [],
         "diag_index": 0,
-        "diag_responses": {},
         "diagnostic": None,
         "method": None,
         "method_idx": None,
+        "method_before_session": None,
         "lesson": None,
         "practice_index": 0,
         "practice_correct": 0,
@@ -64,10 +92,11 @@ def _init_state() -> None:
         "delayed_items": [],
         "delayed_index": 0,
         "delayed_correct": 0,
-        "use_ollama": True,
+        "use_ollama": False,  # default off so demos stay fast/clear
         "model": "qwen2.5:7b",
-        "n_diag": 5,
+        "n_diag": 4,
         "mastery_before": 0.28,
+        "fast_demo": True,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -80,89 +109,169 @@ def _bank() -> QuestionBank:
     return st.session_state.bank
 
 
+def _short_method(method: str) -> str:
+    return {
+        "worked_example": "Worked example first",
+        "problem_first": "Try a problem first",
+        "visual": "Visual (bars / number line)",
+        "story_analogy": "Real-world story",
+    }.get(method, METHOD_PLAIN.get(method, method))
+
+
+def _stepper() -> None:
+    phase = st.session_state.phase
+    mapping = {
+        "home": -1,
+        "diagnostic": 0,
+        "bridge": 1,
+        "lesson": 2,
+        "practice": 3,
+        "delayed": 4,
+        "done": 5,
+    }
+    current = mapping.get(phase, -1)
+    if current < 0:
+        return
+    cols = st.columns(len(STEPS))
+    for i, (_, label) in enumerate(STEPS):
+        with cols[i]:
+            if i < current:
+                st.markdown(f"✅ **{label}**")
+            elif i == current:
+                st.markdown(f"👉 **{label}**")
+            else:
+                st.caption(label)
+    st.divider()
+
+
 def _render_mcq(q: McqQuestion) -> str | None:
-    st.markdown(f"**{q.stem}**")
+    st.markdown(f"### {q.stem}")
     key = (
         f"mcq_{st.session_state.phase}_{q.id}_"
         f"{st.session_state.get('diag_index', 0)}_"
         f"{st.session_state.get('practice_index', 0)}_"
         f"{st.session_state.get('delayed_index', 0)}"
     )
-    labels = [f"{chr(65 + i)}) {c}" for i, c in enumerate(q.choices)]
-    choice = st.radio("Choose one:", labels, key=key, index=None)
+    labels = [f"{chr(65 + i)})  {c}" for i, c in enumerate(q.choices)]
+    choice = st.radio("Pick one answer:", labels, key=key, index=None)
     if choice is None:
         return None
-    # Strip the "A) " prefix.
-    return choice.split(") ", 1)[-1]
+    return choice.split(")  ", 1)[-1]
 
 
-def _sidebar_status() -> None:
-    st.sidebar.title("PerLearn")
-    st.sidebar.caption("You answer → it adapts how it teaches.")
-    name = st.sidebar.text_input("Your name", value=st.session_state.name)
-    st.session_state.name = name.strip() or "Learner"
-    st.session_state.use_ollama = st.sidebar.toggle(
-        "Use local Qwen (Ollama)",
-        value=st.session_state.use_ollama,
-    )
-    st.session_state.model = st.sidebar.text_input("Ollama model", value=st.session_state.model)
-    st.session_state.n_diag = st.sidebar.slider("Sample quiz length", 3, 8, st.session_state.n_diag)
-
-    if st.sidebar.button("Load / refresh profile"):
-        st.session_state.profile = load_or_create(st.session_state.name)
-        st.rerun()
+def _sidebar() -> None:
+    st.sidebar.markdown("## PerLearn")
+    st.sidebar.caption("Demo for Year 5 fractions")
+    st.session_state.name = st.sidebar.text_input("Your name", value=st.session_state.name).strip() or "Learner"
 
     profile = st.session_state.profile
-    if profile is None:
+    if profile is None or profile.name != st.session_state.name:
         st.session_state.profile = load_or_create(st.session_state.name)
         profile = st.session_state.profile
 
     st.sidebar.markdown("---")
-    st.sidebar.metric("Mastery", f"{profile.mastery:.0%}")
-    st.sidebar.metric("Sessions", profile.sessions_completed)
-    st.sidebar.write(f"**Level:** {BIN_NAMES[mastery_bin(profile.mastery)]}")
-    st.sidebar.write(f"**Preferred now:** {METHOD_PLAIN[profile.preferred_method()]}")
-    scores = profile.method_scores()
-    st.sidebar.write("Method scores")
-    for m, s in sorted(scores.items(), key=lambda x: -x[1]):
-        st.sidebar.progress(min(max(s, 0.0), 1.0), text=f"{METHOD_PLAIN[m][:28]} ({s:.2f})")
+    st.sidebar.markdown("### Your progress")
+    st.sidebar.metric("Confidence so far", f"{profile.mastery:.0%}")
+    st.sidebar.metric("Sessions done", profile.sessions_completed)
+    st.sidebar.write(f"Level: **{BIN_NAMES[mastery_bin(profile.mastery)]}**")
+    st.sidebar.write(f"Best teaching style right now:\n\n**{_short_method(profile.preferred_method())}**")
 
-    if st.sidebar.button("Reset this session flow"):
+    with st.sidebar.expander("Advanced settings", expanded=False):
+        st.session_state.fast_demo = st.toggle(
+            "Fast demo (shorter quiz, template lesson)",
+            value=st.session_state.fast_demo,
+            help="Turn off if you want the local AI model to write the lesson.",
+        )
+        st.session_state.use_ollama = st.toggle(
+            "Use local AI lesson (Ollama / Qwen)",
+            value=st.session_state.use_ollama and not st.session_state.fast_demo,
+        )
+        if st.session_state.use_ollama:
+            st.session_state.fast_demo = False
+        st.session_state.model = st.text_input("Ollama model", value=st.session_state.model)
+        st.session_state.n_diag = 3 if st.session_state.fast_demo else st.slider(
+            "Quiz length", 3, 6, st.session_state.n_diag
+        )
+        if st.session_state.use_ollama and not is_reachable():
+            st.warning("Ollama not running. Start it or use Fast demo.")
+
+    if st.sidebar.button("Restart demo flow"):
+        keep = {
+            "name": st.session_state.name,
+            "use_ollama": st.session_state.use_ollama,
+            "model": st.session_state.model,
+            "n_diag": st.session_state.n_diag,
+            "fast_demo": st.session_state.fast_demo,
+        }
         for k in list(st.session_state.keys()):
-            if k not in {"name", "use_ollama", "model", "n_diag"}:
-                del st.session_state[k]
+            del st.session_state[k]
+        for k, v in keep.items():
+            st.session_state[k] = v
+        st.session_state.profile = load_or_create(st.session_state.name)
+        st.session_state.phase = "home"
         st.rerun()
 
 
 def phase_home() -> None:
-    st.title("Learn with me")
-    st.write(
-        "All questions are **multiple choice**. I'll quiz you, pick a teaching method from how "
-        "you're doing, generate a lesson, then check you again — that check trains how I teach you next time."
+    st.title("PerLearn")
+    st.subheader("Most apps pick *what* to learn next. We figure out *how* to teach this child.")
+
+    st.markdown(
+        """
+        <div class="idea-box">
+          <strong>The idea in one line</strong><br/>
+          Watch how a learner answers → try a teaching style → check if it really stuck →
+          keep the styles that work for <em>this</em> child (and change as they grow).
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
+
+    st.markdown("### In this 5-minute demo you will:")
+    st.markdown(
+        """
+1. **Answer a few MCQs** — we find a weak spot  
+2. **Get a lesson** in a teaching style chosen for you  
+3. **Practice**, then take a short **no-help check**  
+4. **See how the system updates** what works for you  
+        """
+    )
+
+    st.markdown("### Four teaching styles we can switch between")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.info("**Worked example first**\n\nShow steps, then practice.")
+        st.info("**Visual**\n\nFraction bars / number lines.")
+    with c2:
+        st.info("**Problem first**\n\nTry it, then explain.")
+        st.info("**Story**\n\nPizza, recipes, real life.")
+
     profile = st.session_state.profile
-    st.code(adaptation_summary(profile), language=None)
+    if profile.sessions_completed:
+        st.success(
+            f"Welcome back, {profile.name}. "
+            f"After {profile.sessions_completed} session(s), your best style so far looks like: "
+            f"**{_short_method(profile.preferred_method())}**."
+        )
+    else:
+        st.caption("First time here — we’ll learn your pattern as you answer.")
 
-    ollama_ok = is_reachable()
-    if st.session_state.use_ollama and not ollama_ok:
-        st.warning("Ollama is not reachable. Start `ollama serve` or turn off local Qwen in the sidebar.")
-    elif st.session_state.use_ollama:
-        st.success(f"Ollama ready · model `{st.session_state.model}`")
-
-    if st.button("Start a session", type="primary"):
+    if st.button("Start the demo →", type="primary", use_container_width=True):
         bank = _bank()
-        # Preselect diagnostic items via a dry run with placeholder answers replaced live.
-        # We'll pick questions adaptively as the user answers; start with an empty list
-        # and generate the next one each step.
         st.session_state.phase = "diagnostic"
         st.session_state.diag_index = 0
-        st.session_state.diag_responses = {}
-        st.session_state.diag_questions = []
         st.session_state.mastery_before = profile.mastery
+        st.session_state.method_before_session = profile.preferred_method()
         st.session_state._diag_ability = 0.45
         st.session_state._diag_used = set()
         st.session_state._diag_trials = []
         st.session_state._skill_correct = {s: [] for s in bank.skills}
+        st.session_state._current_mcq = None
+        st.session_state.lesson = None
+        st.session_state.diagnostic = None
+        if st.session_state.fast_demo:
+            st.session_state.n_diag = 3
+            st.session_state.use_ollama = False
         st.rerun()
 
 
@@ -173,35 +282,45 @@ def _next_diag_question() -> Question | None:
     ability = st.session_state._diag_ability
     used = st.session_state._diag_used
     skill_counts = {s: len(v) for s, v in st.session_state._skill_correct.items()}
-    rng = np.random.default_rng(1000 + st.session_state.profile.sessions_completed + st.session_state.diag_index)
+    rng = np.random.default_rng(
+        1000 + st.session_state.profile.sessions_completed + st.session_state.diag_index
+    )
     return _pick_next(bank, used, ability, skill_counts, rng)
 
 
 def phase_diagnostic() -> None:
-    st.header("Step 1 · Sample questions")
-    st.caption("Answer honestly — this estimates where you are.")
+    st.markdown('<div class="step-chip">Step 1 of 6 · Find the gap</div>', unsafe_allow_html=True)
+    st.header("Quick quiz")
+    st.markdown(
+        '<div class="why-box">Why this step? We need to know <strong>where you’re stuck</strong> '
+        "before we choose how to teach.</div>",
+        unsafe_allow_html=True,
+    )
     i = st.session_state.diag_index
-    st.progress((i) / st.session_state.n_diag, text=f"Question {min(i + 1, st.session_state.n_diag)} of {st.session_state.n_diag}")
+    n = st.session_state.n_diag
+    st.progress(i / n, text=f"Question {min(i + 1, n)} of {n}")
 
-    if i >= st.session_state.n_diag:
+    if i >= n:
         _finish_diagnostic()
         return
 
     if st.session_state.get("_current_mcq") is None:
         raw = _next_diag_question()
         if raw is None:
-            st.error("No more questions available.")
+            st.error("No questions left in the bank.")
             return
         st.session_state._current_mcq = as_mcq(raw)
     q = st.session_state._current_mcq
 
     ans = _render_mcq(q)
-    if st.button("Submit answer", type="primary", disabled=ans is None):
+    if st.button("Submit", type="primary", disabled=ans is None, use_container_width=True):
         from pll.diagnostic import Trial, _update_ability
 
         ok = verify_answer(q.answer, ans).ok
         st.session_state._diag_used.add(q.id)
-        st.session_state._diag_ability = _update_ability(st.session_state._diag_ability, ok, q.difficulty)
+        st.session_state._diag_ability = _update_ability(
+            st.session_state._diag_ability, ok, q.difficulty
+        )
         st.session_state._skill_correct[q.skill].append(ok)
         st.session_state._diag_trials.append(
             Trial(
@@ -258,23 +377,60 @@ def _finish_diagnostic() -> None:
     st.session_state.method_idx = method_idx
     st.session_state.method = METHODS[method_idx]
     st.session_state._bandit = bandit
-    st.session_state.phase = "lesson"
+    st.session_state.phase = "bridge"
     st.rerun()
 
 
-def phase_lesson() -> None:
-    st.header("Step 2 · Your lesson")
-    diagnostic = st.session_state.diagnostic
+def phase_bridge() -> None:
+    st.markdown('<div class="step-chip">Step 2 of 6 · Choose how to teach</div>', unsafe_allow_html=True)
+    st.header("Here’s what we noticed")
+    d = st.session_state.diagnostic
     method = st.session_state.method
     profile = st.session_state.profile
+    bank = _bank()
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Mastery", f"{profile.mastery:.0%}")
-    c2.metric("Diagnostic", f"{diagnostic.n_correct}/{diagnostic.n_items}")
-    c3.metric("Method today", METHOD_PLAIN[method].split(",")[0])
+    skill = SKILL_LABELS.get(d.weakest_skill, d.weakest_skill)
+    why = "a common mix-up on this topic"
+    if d.active_misconceptions:
+        why = bank.misconceptions.get(d.active_misconceptions[0], d.active_misconceptions[0])
 
-    st.write(f"**Focus:** {SKILL_LABELS.get(diagnostic.weakest_skill, diagnostic.weakest_skill)}")
-    st.write(f"**Teaching with:** {METHOD_PLAIN[method]}")
+    a, b, c = st.columns(3)
+    a.metric("Quiz score", f"{d.n_correct}/{d.n_items}")
+    b.metric("Confidence", f"{profile.mastery:.0%}")
+    c.metric("Level", BIN_NAMES[mastery_bin(profile.mastery)])
+
+    st.markdown(
+        f"""
+        <div class="idea-box">
+          <strong>Weak spot:</strong> {skill}<br/>
+          <strong>Likely mix-up:</strong> {why}<br/><br/>
+          <strong>So today we’ll teach with:</strong> {_short_method(method)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="why-box">This is the core idea: we don’t only pick the next topic — '
+        "we pick the <strong>teaching style</strong> that should help <em>you</em> right now.</div>",
+        unsafe_allow_html=True,
+    )
+
+    if st.button("Show my lesson →", type="primary", use_container_width=True):
+        st.session_state.phase = "lesson"
+        st.rerun()
+
+
+def phase_lesson() -> None:
+    st.markdown('<div class="step-chip">Step 3 of 6 · Learn</div>', unsafe_allow_html=True)
+    st.header("Your personalised lesson")
+    diagnostic = st.session_state.diagnostic
+    method = st.session_state.method
+
+    st.markdown(
+        f'<div class="why-box">Teaching style: <strong>{_short_method(method)}</strong> · '
+        f"Topic: <strong>{SKILL_LABELS.get(diagnostic.weakest_skill, diagnostic.weakest_skill)}</strong></div>",
+        unsafe_allow_html=True,
+    )
 
     if st.session_state.lesson is None:
         weak_miss: dict[str, int] = {}
@@ -288,7 +444,8 @@ def phase_lesson() -> None:
             else (diagnostic.active_misconceptions[0] if diagnostic.active_misconceptions else None)
         )
         use_ollama = st.session_state.use_ollama and is_reachable()
-        with st.spinner("Generating lesson" + (" with local Qwen…" if use_ollama else "…")):
+        label = "Writing lesson with local AI…" if use_ollama else "Preparing lesson…"
+        with st.spinner(label):
             lesson = generate_lesson(
                 method=method,
                 skill=diagnostic.weakest_skill,
@@ -300,32 +457,46 @@ def phase_lesson() -> None:
         st.session_state.lesson = lesson
 
     lesson = st.session_state.lesson
-    st.caption(
-        f"Source: {lesson.source} · SymPy verified: {lesson.all_verified}"
-        + (f" · model: {lesson.model_name}" if lesson.model_name else "")
-    )
-    st.markdown(render_lesson_markdown(lesson))
+    with st.expander("Lesson", expanded=True):
+        # Strip noisy metadata lines for demos
+        md = render_lesson_markdown(lesson)
+        lines = [
+            ln
+            for ln in md.splitlines()
+            if not ln.startswith("**Source:**")
+            and not ln.startswith("**Model:**")
+            and not ln.startswith("**All answers")
+        ]
+        st.markdown("\n".join(lines))
 
-    if st.button("I've read it — go to practice", type="primary"):
+    if st.button("I read it — practice now →", type="primary", use_container_width=True):
         st.session_state.phase = "practice"
         st.session_state.practice_index = 0
         st.session_state.practice_correct = 0
         st.session_state.practice_total = 0
+        st.session_state._current_practice_mcq = None
         st.rerun()
 
 
 def phase_practice() -> None:
-    st.header("Step 3 · Practice (MCQ)")
+    st.markdown('<div class="step-chip">Step 4 of 6 · Practice</div>', unsafe_allow_html=True)
+    st.header("Practice questions")
+    st.markdown(
+        '<div class="why-box">Practice helps you learn — but we <strong>don’t</strong> use practice '
+        "scores to decide your teaching style (that can reward easy help). "
+        "The next no-help check does.</div>",
+        unsafe_allow_html=True,
+    )
     lesson = st.session_state.lesson
     items = lesson.practice
     i = st.session_state.practice_index
+
     if i >= len(items):
         st.success(
-            f"Practice done: {st.session_state.practice_correct}/{st.session_state.practice_total} "
-            "(practice does **not** train the bandit)"
+            f"Practice finished: {st.session_state.practice_correct}/"
+            f"{st.session_state.practice_total} correct"
         )
-        if st.button("Start unassisted check", type="primary"):
-            st.session_state.phase = "delayed"
+        if st.button("Final no-help check →", type="primary", use_container_width=True):
             used = {t.question_id for t in st.session_state.diagnostic.trials} | {
                 p["id"] for p in lesson.practice
             }
@@ -339,7 +510,7 @@ def phase_practice() -> None:
             st.session_state.delayed_items = [as_mcq(q) for q in pool]
             st.session_state.delayed_index = 0
             st.session_state.delayed_correct = 0
-            st.session_state._current_practice_mcq = None
+            st.session_state.phase = "delayed"
             st.rerun()
         return
 
@@ -348,7 +519,7 @@ def phase_practice() -> None:
         st.session_state._current_practice_mcq = as_mcq(_bank().get(items[i]["id"]))
     q = st.session_state._current_practice_mcq
     ans = _render_mcq(q)
-    if st.button("Check", type="primary", disabled=ans is None):
+    if st.button("Check answer", type="primary", disabled=ans is None, use_container_width=True):
         ok = verify_answer(q.answer, ans).ok
         st.session_state.practice_total += 1
         st.session_state.practice_correct += int(ok)
@@ -358,11 +529,15 @@ def phase_practice() -> None:
 
 
 def phase_delayed() -> None:
-    st.header("Step 4 · Unassisted check (MCQ)")
-    st.caption("No peeking — this score trains how I teach you next time.")
+    st.markdown('<div class="step-chip">Step 5 of 6 · Check it stuck</div>', unsafe_allow_html=True)
+    st.header("No-help check")
+    st.markdown(
+        '<div class="why-box">Answer without looking back. '
+        "This score tells us if today’s teaching style <strong>actually worked</strong>.</div>",
+        unsafe_allow_html=True,
+    )
     items = st.session_state.delayed_items
     i = st.session_state.delayed_index
-
     if i >= len(items):
         _finish_session()
         return
@@ -370,7 +545,7 @@ def phase_delayed() -> None:
     st.progress(i / max(len(items), 1), text=f"Check {i + 1} of {len(items)}")
     q = items[i]
     ans = _render_mcq(q)
-    if st.button("Submit", type="primary", disabled=ans is None):
+    if st.button("Lock in answer", type="primary", disabled=ans is None, use_container_width=True):
         ok = verify_answer(q.answer, ans).ok
         st.session_state.delayed_correct += int(ok)
         st.session_state.delayed_index += 1
@@ -412,17 +587,62 @@ def _finish_session() -> None:
 
 
 def phase_done() -> None:
-    st.header("How I'm adapting to you")
-    st.metric("Delayed check", f"{st.session_state._last_delayed:.0%}")
-    st.code(adaptation_summary(st.session_state.profile), language=None)
-    st.caption(f"Saved: {st.session_state._save_path}")
-    if st.button("Do another session", type="primary"):
+    st.markdown('<div class="step-chip">Step 6 of 6 · See what changed</div>', unsafe_allow_html=True)
+    st.header("This is the point of PerLearn")
+
+    profile = st.session_state.profile
+    before = st.session_state.method_before_session or st.session_state.method
+    used = st.session_state.method
+    after = profile.preferred_method()
+    delayed = st.session_state._last_delayed
+
+    a, b = st.columns(2)
+    a.metric("No-help check", f"{delayed:.0%}")
+    b.metric(
+        "Confidence",
+        f"{profile.mastery:.0%}",
+        delta=f"{(profile.mastery - st.session_state.mastery_before)*100:.0f} pts",
+    )
+
+    st.markdown(
+        f"""
+        <div class="idea-box">
+          <strong>What happened this session</strong><br/>
+          We taught with: <strong>{_short_method(used)}</strong><br/>
+          Your no-help score was <strong>{delayed:.0%}</strong>.
+          That result updates what we think works for you.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.info(f"**Before this session**\n\n{_short_method(before)}")
+    with c2:
+        st.success(f"**Best guess for next time**\n\n{_short_method(after)}")
+
+    if before != after:
+        st.warning(
+            f"Adaptation happened: preference moved from **{_short_method(before)}** "
+            f"to **{_short_method(after)}** based on whether today’s lesson stuck."
+        )
+    else:
+        st.info(
+            f"Still leaning toward **{_short_method(after)}**. "
+            "Do another session — as you get stronger, the best style can change."
+        )
+
+    st.markdown("### Method fit scores (for your current level)")
+    for method, score in sorted(profile.method_scores().items(), key=lambda x: -x[1]):
+        st.progress(min(max(score, 0.0), 1.0), text=f"{_short_method(method)} — {score:.2f}")
+
+    st.caption("Run more sessions to see the teaching style shift as mastery grows.")
+
+    if st.button("Do another session", type="primary", use_container_width=True):
         st.session_state.phase = "home"
         st.session_state.lesson = None
         st.session_state.diagnostic = None
-        st.rerun()
-    if st.button("Back to home"):
-        st.session_state.phase = "home"
         st.rerun()
 
 
@@ -430,24 +650,19 @@ def main() -> None:
     _init_state()
     if st.session_state.profile is None:
         st.session_state.profile = load_or_create(st.session_state.name)
-    _sidebar_status()
+    _sidebar()
+    _stepper()
 
     phase = st.session_state.phase
-    if phase == "home":
-        phase_home()
-    elif phase == "diagnostic":
-        phase_diagnostic()
-    elif phase == "lesson":
-        phase_lesson()
-    elif phase == "practice":
-        phase_practice()
-    elif phase == "delayed":
-        phase_delayed()
-    elif phase == "done":
-        phase_done()
-    else:
-        st.session_state.phase = "home"
-        st.rerun()
+    {
+        "home": phase_home,
+        "diagnostic": phase_diagnostic,
+        "bridge": phase_bridge,
+        "lesson": phase_lesson,
+        "practice": phase_practice,
+        "delayed": phase_delayed,
+        "done": phase_done,
+    }.get(phase, phase_home)()
 
 
 if __name__ == "__main__":
