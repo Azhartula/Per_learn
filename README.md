@@ -70,6 +70,17 @@ Flow: adaptive diagnostic → contextual bandit picks method → SymPy-verified 
 
 Outputs in `outputs/sessions/`.
 
-## Next (Phase 4)
+## Phase 4 — shareable demo site
 
-Parent dashboard UI + shareable pitch link.
+```bash
+PYTHONPATH=src python scripts/build_demo_site.py --refresh-session
+PYTHONPATH=src python scripts/serve_demo.py
+# → http://127.0.0.1:8765/
+# → http://127.0.0.1:8765/parent.html
+```
+
+Static files live in `docs/` for GitHub Pages:
+
+- Pitch: https://azhartula.github.io/Per_learn/
+- Parent dashboard: https://azhartula.github.io/Per_learn/parent.html
+
